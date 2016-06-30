@@ -1,0 +1,41 @@
+<ion-modal-view>
+     <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Notas</h1>
+        <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+     </ion-header-bar>
+    <ion-content>
+       <div class="list">
+         <label class="item item-input item-stacked-label">
+            <span class="input-label">Codigo SIS</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.CODEST}}"/>
+         </label>
+         <label class="item item-input item-stacked-label">
+            <span class="input-label">Nombre y Apellido</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOMBRE}}"/>
+        </label>
+         <label class="item item-input item-stacked-label">
+             <span class="input-label">1ra Opcion</span>
+             <input type="text" ng-show="estudiante.RAOPC == '' || estudiante.RAOPC == 0" ng-model="raOpcion" placeholder="1ra Opcion" only-num/>
+            <div ng-show="estudiante.RAOPC != 0">{{estudiante.RAOPC}}</div>
+            <label class="error-label" ng-show="!errorV">Inserte numero</label><br> 
+            <label class="error-label" ng-show="errorM">Inserte valores menor a 100</label> 
+        </label>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">2da Opcion</span>
+            <input type="number" ng-show="estudiante.DAOPC == '' || estudiante.DAOPC == 0 " ng-model="daOpcion"  placeholder="2da Opcion" ></input>
+            <div ng-show="estudiante.DAOPC != 0" >{{estudiante.DAOPC}}</div>
+        </label>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Nota Final</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOTFIN}}" />
+        </label>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Nota Cont</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOTCON}}"/>
+        </label>
+        <button class="button button-full button-positive">
+            Guardar
+        </button>
+      <div>
+    </ion-content>
+</ion-view>

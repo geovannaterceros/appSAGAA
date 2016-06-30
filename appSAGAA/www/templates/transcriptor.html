@@ -1,0 +1,10 @@
+<ion-view title="Bienvenido al Transcriptor">
+    <ion-content>
+        <h1>Select text file</h1>
+            <input type="file" on-read-file="showContent($fileContent)" />
+                <div ng-if="content">
+                     <h2>File content is:</h2>
+                     <pre>{{ content }}</pre>
+                </div>
+    </ion-content>
+</ion-view>

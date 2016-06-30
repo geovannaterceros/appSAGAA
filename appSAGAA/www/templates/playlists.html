@@ -1,6 +1,7 @@
-<ion-view view-title="Playlists">
+<ion-view view-title="SAGAA">
   <ion-content>
     <ion-list>
+      <ng-mensaje></ng-mensaje>
       <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
         {{playlist.title}}
       </ion-item>

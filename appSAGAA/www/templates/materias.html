@@ -1,0 +1,28 @@
+<ion-view title="Lista de Materias">
+    <ion-content>
+    <div class="list" ng-repeat="materia in materias" >
+          <div class="item item-divider">
+              <a href="#/app/estudiantes" ng-click="matEst(materia.codP, materia.grupoMat)">{{materia.nomMat}}</a>
+          </div>
+          <div class="item item-text-wrap">
+              {{materia.codMat}} 
+              <br>
+              {{materia.grupoMat}}
+              <br>
+              Tipo Normal
+          </div>
+    </div>
+    <div class="list" ng-repeat="mesa in mesas">
+          <div class="item item-divider">
+              <a href="#/app/estudiantes" ng-click="matEst(mesa.codP, mesa.grupoMat)" >{{mesa.nomMat}}</a>
+          </div>
+            <div class="item item-text-wrap">
+              {{mesa.codMat}} 
+              <br>
+              {{mesa.grupoMat}}
+              <br>
+              Tipo Mesa
+          </div>
+    </div>
+    </ion-content>
+</ion-view>

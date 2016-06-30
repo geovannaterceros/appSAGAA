@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.filter', 'starter.directive' ,'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -25,22 +25,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
-    .state('app', {
+   .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl'
   })
-
-  .state('app.search', {
-    url: '/search',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/search.html'
-      }
-    }
-  })
-
   .state('app.browse', {
       url: '/browse',
       views: {
@@ -58,7 +48,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {
@@ -67,7 +56,57 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'PlaylistCtrl'
       }
     }
+  })
+  .state('inicio', {
+    url: '/inicio',
+    templateUrl: 'templates/inicio.html',
+    controller: 'InicioCtrl'
+  })
+  .state('carreras',{
+    url: '/carreras',
+    templateUrl: 'templates/carreras.html'
+  })
+  .state('gestion', {
+    url: '/gestion',
+    templateUrl: 'templates/gestion.html',
+    controller: 'GestionCtrl'
+  })
+  .state('app.transcriptor', {
+    url: '/transcriptor',
+      views: {
+        'menuContent': {
+         templateUrl: 'templates/transcriptor.html',
+         controller: 'FileCtrl'
+        }
+      }
+  })
+  .state('app.informacion', {
+    url: '/informacion',
+      views: {
+        'menuContent': {
+         templateUrl: 'templates/informacion.html',
+         controller: 'InformacionCtrl'
+        }
+      }
+  })
+  .state('app.materias', {
+    url: '/materias',
+      views: {
+        'menuContent': {
+         templateUrl: 'templates/materias.html',
+         controller: 'MateriasCtrl'
+        }
+      }
+  })
+  .state('app.estudiantes', {
+    url: '/estudiantes',
+      views: {
+        'menuContent': {
+         templateUrl: 'templates/estudiantes.html',
+         controller: 'EstudiantesCtrl'
+        }
+     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/inicio');
 });

@@ -1,0 +1,44 @@
+<ion-modal-view>
+     <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Notas</h1>
+        <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+     </ion-header-bar>
+    <ion-content> 
+       <div class="list">
+        <label class="item item-input">
+          {{estudiante.CODEST}}
+        </label>
+        <label class="item item-input">
+          {{estudiante.NOMBRE}}
+        </label>
+        <label class="item item-input">
+            <input type="text" ng-show="estudiante.ERPAR == '' || estudiante.ERPAR == 0"  placeholder="Primer Parcial"></input>
+            <div ng-show="estudiante.ERPAR !== 0">{{estudiante.ERPAR}}</div>
+        </label>
+        <label class="item item-input">
+            <input type="text" ng-show="estudiante.ERPAR == '' || estudiante.ERPAR == 0 "  placeholder="Segundo Parcial"></input>
+            <div ng-show="estudiante.ERPAR != 0" >{{estudiante.DOPAR}}</div>
+        </label>
+        <label class="item item-input">
+          {{estudiante.PROMED}}
+        </label>
+        <label class="item item-input">
+            <input type="text" ng-show="estudiante.EXAFIN == '' || estudiante.ERPAR == 0" placeholder="Examen Final">
+            <div ng-show="estudiante.ERPAR != 0">{{estudiante.EXAFIN}}</div>
+        </label>
+        <label class="item item-input">
+            <input type="text" ng-show="estudiante.da == '' || estudiante.ERPAR == 0" placeholder="2da Instancia">
+            <div ng-show="estudiante.ERPAR != 0" >{{estudiante.da}}</div>
+        </label>
+        <label class="item item-input">
+          {{estudiante.NOTFIN}}
+        </label>
+        <label class="item item-input">
+          {{estudiante.NOTCON}}
+        </label>
+        <button class="button button-full button-positive">
+            Guardar
+        </button>
+      <div>
+    </ion-content>
+</ion-view>
