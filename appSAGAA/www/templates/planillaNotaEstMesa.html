@@ -12,28 +12,28 @@
          <label class="item item-input item-stacked-label">
             <span class="input-label">Nombre y Apellido</span>
             <input type="text" ng-disabled="true" placeholder="{{estudiante.NOMBRE}}"/>
-        </label>
+         </label>
          <label class="item item-input item-stacked-label">
              <span class="input-label">1ra Opcion</span>
-             <input type="text" ng-show="estudiante.RAOPC == '' || estudiante.RAOPC == 0" ng-model="raOpcion" placeholder="1ra Opcion" only-num/>
-            <div ng-show="estudiante.RAOPC != 0">{{estudiante.RAOPC}}</div>
-            <label class="error-label" ng-show="!errorV">Inserte numero</label><br> 
-            <label class="error-label" ng-show="errorM">Inserte valores menor a 100</label> 
+             <input type="text" ng-model="estudiante.RAOPC" placeholder="1ra Opcion" opcion="primeraOp" only-num/>
+            <ng-mensaje mensaje="errorRM"></ng-mensaje>
+            <ng-mensaje valor="!errorRV"></ng-mensaje>
         </label>
-        <label class="item item-input item-stacked-label">
+        <label class="item item-input item-stacked-label" ng-hide="!daOp">
             <span class="input-label">2da Opcion</span>
-            <input type="number" ng-show="estudiante.DAOPC == '' || estudiante.DAOPC == 0 " ng-model="daOpcion"  placeholder="2da Opcion" ></input>
-            <div ng-show="estudiante.DAOPC != 0" >{{estudiante.DAOPC}}</div>
+            <input type="text" ng-model="estudiante.DAOPC"  placeholder="2da Opcion" opcion="segundaOp" only-num/>
+            <ng-mensaje mensaje="errorDM"></ng-mensaje>
+            <ng-mensaje mensajeV="errorDV"></ng-mensaje>
         </label>
         <label class="item item-input item-stacked-label">
             <span class="input-label">Nota Final</span>
-            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOTFIN}}" />
+            <input type="text" ng-disabled="true" ng-model="notFin" placeholder="{{estudiante.NOTFIN}}" />
         </label>
         <label class="item item-input item-stacked-label">
             <span class="input-label">Nota Cont</span>
-            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOTCON}}"/>
+            <input type="text" ng-disabled="true" ng-model="notCon" placeholder="{{estudiante.NOTCON}}"/>
         </label>
-        <button class="button button-full button-positive">
+        <button class="button button-full button-positive" ng-click="closeModal(estudiante)">
             Guardar
         </button>
       <div>

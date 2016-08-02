@@ -26,87 +26,65 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   $stateProvider
 
    .state('app', {
-    url: '/app',
-    abstract: true,
-    templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl'
+    url : '/app',
+    abstract : true,
+    templateUrl : 'templates/app.html',
+    controller : 'AppCtrl'
   })
-  .state('app.browse', {
-      url: '/browse',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/browse.html'
+  .state('app.inicio', {
+    url : '/inicio',
+      views : { 
+          'appContenido' : {
+             templateUrl: 'templates/inicio.html',
+             controller: 'InicioCtrl'
+            }
+      }
+  })
+  .state('app.gestion', {
+    url : '/gestion',
+      views : {
+          'appContenido' : {
+            templateUrl: 'templates/gestion.html',
+            controller: 'GestionCtrl'
+            }
         }
-      }
-    })
-    .state('app.playlists', {
-      url: '/playlists',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
-        }
-      }
-    })
-  .state('app.single', {
-    url: '/playlists/:playlistId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
-      }
-    }
-  })
-  .state('inicio', {
-    url: '/inicio',
-    templateUrl: 'templates/inicio.html',
-    controller: 'InicioCtrl'
-  })
-  .state('carreras',{
-    url: '/carreras',
-    templateUrl: 'templates/carreras.html'
-  })
-  .state('gestion', {
-    url: '/gestion',
-    templateUrl: 'templates/gestion.html',
-    controller: 'GestionCtrl'
-  })
-  .state('app.transcriptor', {
-    url: '/transcriptor',
-      views: {
-        'menuContent': {
-         templateUrl: 'templates/transcriptor.html',
-         controller: 'FileCtrl'
-        }
-      }
   })
   .state('app.informacion', {
     url: '/informacion',
       views: {
-        'menuContent': {
-         templateUrl: 'templates/informacion.html',
-         controller: 'InformacionCtrl'
+        'appContenido' : {
+             templateUrl : 'templates/informacion.html',
+             controller : 'InformacionCtrl'
+        },
+        'menuListaIzquierda' : {
+             templateUrl : 'templates/menuIzquierdo.html'
         }
       }
   })
   .state('app.materias', {
     url: '/materias',
       views: {
-        'menuContent': {
-         templateUrl: 'templates/materias.html',
-         controller: 'MateriasCtrl'
+        'appContenido': {
+             templateUrl: 'templates/materias.html',
+             controller: 'MateriasCtrl'
+        },
+        'menuListaIzquierda' : {
+            templateUrl : 'templates/menuIzquierdo.html'
         }
       }
   })
   .state('app.estudiantes', {
     url: '/estudiantes',
       views: {
-        'menuContent': {
-         templateUrl: 'templates/estudiantes.html',
-         controller: 'EstudiantesCtrl'
+        'appContenido' : {
+            templateUrl : 'templates/estudiantes.html',
+            controller : 'EstudiantesCtrl'
+        },
+        'menuListaDerecha' : {
+            templateUrl: 'templates/menuDerecho.html',
         }
      }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/inicio');
+  $urlRouterProvider.otherwise('app/inicio');
 });

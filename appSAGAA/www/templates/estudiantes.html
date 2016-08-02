@@ -1,7 +1,31 @@
-<ion-view title="Lista de Estudiantes">
+<ion-view >
+    <ion-nav-title>
+        Lista de Estudiantes
+    </ion-nav-title>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-android-search" ng-click="desliza"></button>
+        <button menu-toggle="right"class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
     <ion-content>
+         <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+                <i class="icon ion-android-search placeholder-icon"></i>
+                <input type="text" placeholder="Buscar"  >
+            </label>
+            <button class="button ion-close-circled input-button button-small" ng-click="borrar()" >
+                Borrar la busqueda
+            </button>
+        </div>
+        <!--cuando aumento el filter no se muestra !-->
       <ion-list ng-repeat="estudiante in listaN">
-        <ion-item><a href="" ng-click="openModal(estudiante)">{{estudiante.NOMBRE}}</a></ion-item>
+        <ion-item>
+            <div class=item-avatar ng-click="openModal(estudiante)" >
+                <img src="../img/people.png">
+                <h2 >{{estudiante.NOMBRE}}</h2>
+                <p>Nota Final:{{estudiante.NOTFIN}}</p>
+                <p>Estado:{{estudiante.NOTCON}}</p>
+            </div>
+        </ion-item>
       </ion-list>
     </ion-content>
 </ion-view>

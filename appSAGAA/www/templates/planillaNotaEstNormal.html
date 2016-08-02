@@ -3,40 +3,53 @@
         <h1 class="title">Notas</h1>
         <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
      </ion-header-bar>
-    <ion-content> 
+    <ion-content>
        <div class="list">
-        <label class="item item-input">
-          {{estudiante.CODEST}}
+         <label class="item item-input item-stacked-label">
+            <span class="input-label">Codigo SIS</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.CODEST}}" ng-model="estudiante.CODEST"/>
+         </label>
+         <label class="item item-input item-stacked-label">
+            <span class="input-label">Nombre</span>
+            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOMBRE}}" ng-model="estudiante.NOMBRE"/>
+         </label>
+         <label class="item item-input item-stacked-label">
+             <span class="input-label">1er Parcial</span>
+             <input type="text" ng-model="estudiante.ERPAR" placeholder="Primer Parcial" opcion="primerP"  only-num/>
+            <ng-mensaje mensaje="errorPM"></ng-mensaje>
+            <ng-mensaje valor="!errorPV"></ng-mensaje>
         </label>
-        <label class="item item-input">
-          {{estudiante.NOMBRE}}
+        <label class="item item-input item-stacked-label">
+             <span class="input-label">2do Parcial</span>
+             <input type="text" ng-model="estudiante.DOPAR" placeholder="Segundo Parcial" opcion="segundoP" only-num/>
+            <ng-mensaje mensaje="errorSM"></ng-mensaje>
+            <ng-mensaje valor="!errorSV"></ng-mensaje>
         </label>
-        <label class="item item-input">
-            <input type="text" ng-show="estudiante.ERPAR == '' || estudiante.ERPAR == 0"  placeholder="Primer Parcial"></input>
-            <div ng-show="estudiante.ERPAR !== 0">{{estudiante.ERPAR}}</div>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">PROMEDIO</span>
+            <input type="text" ng-disabled="true" ng-model="estudiante.PROMED" placeholder="{{estudiante.NOTFIN}}" />
         </label>
-        <label class="item item-input">
-            <input type="text" ng-show="estudiante.ERPAR == '' || estudiante.ERPAR == 0 "  placeholder="Segundo Parcial"></input>
-            <div ng-show="estudiante.ERPAR != 0" >{{estudiante.DOPAR}}</div>
+        <label class="item item-input item-stacked-label" ng-hide="!exFin">
+             <span class="input-label">Examen Final</span>
+             <input type="text" ng-model="estudiante.EXAFIN" placeholder="Examen Final" opcion="examenF" only-num/>
+            <ng-mensaje mensaje="errorFM"></ng-mensaje>
+            <ng-mensaje valor="!errorFV"></ng-mensaje>
         </label>
-        <label class="item item-input">
-          {{estudiante.PROMED}}
+        <label class="item item-input item-stacked-label" ng-hide="!daInst">
+             <span class="input-label">2da Instancia</span>
+             <input type="text" ng-model="estudiante.da" placeholder="2da Instancia" opcion="daInstancia" only-num/>
+            <ng-mensaje mensaje="errorDM"></ng-mensaje>
+            <ng-mensaje valor="!errorDV"></ng-mensaje>
         </label>
-        <label class="item item-input">
-            <input type="text" ng-show="estudiante.EXAFIN == '' || estudiante.ERPAR == 0" placeholder="Examen Final">
-            <div ng-show="estudiante.ERPAR != 0">{{estudiante.EXAFIN}}</div>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Nota Final</span>
+            <input type="text" ng-disabled="true" ng-model="estudiante.NOTFIN" placeholder="{{estudiante.NOTFIN}}" />
         </label>
-        <label class="item item-input">
-            <input type="text" ng-show="estudiante.da == '' || estudiante.ERPAR == 0" placeholder="2da Instancia">
-            <div ng-show="estudiante.ERPAR != 0" >{{estudiante.da}}</div>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Nota Cont</span>
+            <input type="text" ng-disabled="true" ng-model="estudiante.NOTCON" placeholder="{{estudiante.NOTCON}}" />
         </label>
-        <label class="item item-input">
-          {{estudiante.NOTFIN}}
-        </label>
-        <label class="item item-input">
-          {{estudiante.NOTCON}}
-        </label>
-        <button class="button button-full button-positive">
+        <button class="button button-full button-positive" ng-click="closeModal(estudiante)" >
             Guardar
         </button>
       <div>

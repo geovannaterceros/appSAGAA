@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -8,7 +8,7 @@ angular.module('starter.controllers', [])
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
+    console.log(GuardarData.getDataSis());
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -39,6 +39,21 @@ angular.module('starter.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+  // Mi codigo menu
+  $scope.guardarLE = function(estudiante){
+    console.log("ya podemos guardar");
+    console.log(estudiante);
+  }
+  //$scope.myGoBack = function(){
+      if($ionicHistory.currentStateName() == "app.inicio"){
+        $scope.mostrarAtras = true;
+      }else{
+        $scope.mostrarAtras = false;
+      }
+    console.log($ionicHistory.currentStateName());
+    console.log("volver atras");
+  //}
+
 })
 
 .controller('PlaylistsCtrl', function($scope) {
@@ -149,27 +164,30 @@ angular.module('starter.controllers', [])
 
 })
 //Mostrar la lista de estudiantes segun la material seleccionanada
-.controller('EstudiantesCtrl', function($scope ,$ionicModal ,ListaEstServ ,FileFact ,CrearBDServ){
+.controller('EstudiantesCtrl', function($scope ,$ionicModal ,ListaEstServ ,FileFact ,CrearBDServ, GuardarData){
     var grupo  = ListaEstServ.getcodP();
     console.log(grupo);
+    var arrayObj =[];
     FileFact.then(function(response){
-    var l = function(numId){
-        var array = [];
-        var arrayObj = [];
-        var x = 0;
-        var lista = CrearBDServ.divFile(response.data ,grupo.codP);
-        var listaA = CrearBDServ.sepDatos(lista[0]);
-        var listaT = (listaA.length)/numId;
-        var ini = 0;
-        var fin = numId;
-            for(var i = 0; i <= listaT ; i++){
+        var l = function(numId){
+            var array = [];
+            var x = 0;//repartir
+            console.log(response.data);
+            console.log(grupo.codP);
+            var lista = CrearBDServ.divFile(response.data ,grupo.codP);//devuelve una cadena de datos 
+            console.log(lista);
+            var listaA = CrearBDServ.sepDatos(lista[0]);//separa por coma y quita la primera y ultima q son vacios 
+            var listaT = (listaA.length)/numId;  
+            //cantidad de estudiantes depende la materia 7(mesa) o 11(normal)
+            var ini = 0;//repartir
+            var fin = numId;//repartir
+                for(var i = 0; i <= listaT ; i++){
                     for(var j = ini; j < fin; j++){
                        array[x] = listaA[j];
                         x++;
-
                     }
                        if(numId == 10){
-
+                        
                             arrayObj[i] = CrearBDServ.crearBDListaEstN(array);
                        }
                        if(numId == 7){
@@ -179,19 +197,24 @@ angular.module('starter.controllers', [])
                         x = 0 ;
                         ini = fin;
                         fin = (i + 1) * numId;
-                }
+                }//guarda en el objeto de bd
+                console.log("how to makeing-------------");
+                console.log("size::"+arrayObj.length);
                 for(var i = 0; i< arrayObj.length; i++){
+                    console.log(arrayObj[i]);
                     if(arrayObj[i] === '{}'){
+                         console.log(arrayObj[i]);
                          arrayObj.splice(i, 1);
                      }
                     else{
                         if(i == 0){
+                        console.log(arrayObj[i]);
                         arrayObj.splice(i, 1);
                         }
                     }
                 }
                    return arrayObj;
-            }
+           }
         var tipo;
         var url;
         if(grupo.tipo == 'ME'){
@@ -202,24 +225,155 @@ angular.module('starter.controllers', [])
             url = "templates/planillaNotaEstNormal.html";
         }
         $scope.listaN = l(tipo);
-
+    
    $ionicModal.fromTemplateUrl(url, function($ionicModal) {
+
            $scope.modal = $ionicModal;
-   }, {
-         scope: $scope
+    },
+    {
+        scope: $scope
     });
-    $scope.openModal = function(estudiante) {
-        $scope.mostrar = function(datoVal, datoMax ){
-            $scope.errorV = datoVal;
-            $scope.errorM = datoMax;
+
+    var estudiante = {};
+    var bandera ;
+   /*2da Instancia, editar los campos
+    * Identifica que tipo de atributo con opcion 
+    * Cambiar los atributos del estudiante seguna al campo editado
+    * */
+    $scope.openModal = function(est) {
+        estudiante = est;
+        $scope.mostrar = function(datoVal, datoMax, dato, opcion){
+            if(opcion === "primeraOp" && dato > 51){
+                $scope.errorRV = datoVal;
+                $scope.errorRM = datoMax;
+                $scope.daOp = false;
+                estudiante.RAOPC = dato;
+                estudiante.NOTFIN = dato;
+                estudiante.NOTCON = 'A';
+            }
+
+            if(dato < 51 ){
+                $scope.daOp = true;
+                estudiante.NOTFIN = dato;
+                estudiante.NOTCON = 'R';
+                if(opcion === "primeraOp"){
+                    $scope.errorRV = datoVal;
+                    $scope.errorRM = datoMax;
+                }else{
+                    $scope.errorDV = datoVal;
+                    $scope.errorDM = datoMax;
+                }
+            }
+
+            if(opcion ==="segundaOp" && dato >51)
+            {   estudiante.DAOPC = dato;
+                estudiante.NOTFIN = dato;
+                estudiante.NOTCON = 'A';
+                $scope.errorDV = datoVal;
+                $scope.errorDM = datoMax;
+            }
             $scope.$apply();
         };
+        //si es que ya ha editado la primera opcion
+        if(estudiante.RAOPC != 0 ){
+            $scope.daOp = true;
+        }
+        //comienza para planilla de notas de la materia Normal
+        $scope.mostrarN = function(datoVal, datoMax, dato, opcion){
+            var promedio = 0;
+            if(opcion == "primerP"){
+                $scope.errorPV = datoVal;
+                $scope.errorPM = datoMax;
+                estudiante.ERPAR = dato;
+                estudiante.PROMED = estudiante.ERPAR / 2;
+                estudiante.NOTFIN = estudiante.PROMED;
+            }
+            if(opcion == "segundoP"){
+                $scope.errorSV = datoVal;
+                $scope.errorSM = datoMax;
+                estudiante.DOPAR = dato;
+                var p = Number(estudiante.ERPAR);
+                var s = Number(estudiante.DOPAR);
+                estudiante.PROMED = (p + s)/2;
+                estudiante.NOTFIN = estudiante.PROMED;
+            }
+            //reprobado
+            if(estudiante.PROMED <=51 ){
+                $scope.exFin = true;
+            }
+            else {
+                $scope.exFin = false;
+                estudiante.NOTFIN =  estudiante.PROMED;
+                estudiante.NOTCON = 'A';
+            }
+            if(opcion == "examenF"){
+                $scope.errorFV = datoVal;
+                $scope.errorFM = datoMax;
+                estudiante.EXAFIN = dato;
+                estudiante.NOTFIN = dato;
+                if(estudiante.NOTFIN <= 51){
+                    estudiante.NOTCON = 'R';
+                }
+                else{
+                    estudiante.NOTCON = 'A';
+                }
+            }
+            if(opcion == "daInstancia"){
+                $scope.errorDV = datoVal;
+                $scope.errorDM = datoMax;
+                estudiante.da = dato;
+                estudiante.NOTFIN = dato;
+                if(estudiante.NOTFIN <= 51){
+                    estudiante.NOTCON = 'R';
+                }else{
+                    estudiante.NOTCON = 'A';
+                }
+            }
+            if(estudiante.PROMED >= 26 && estudiante.EXAFIN <=51 && estudiante.EXAFIN != ''){
+                $scope.daInst = true;
+            }else{
+                $scope.daInst = false;
+            }
+            $scope.$apply();
+        }
+        //fin de planilla de notas
         $scope.estudiante = estudiante;
-         $scope.modal.show();
-    }
-   
-    }, function(response){});
+        $scope.modal.show();
+    };
 
+    $scope.closeModal = function(estudiante){
+        $scope.daOp = false;
+        //si no ha realizado cambios en en ninguna opcion deberia mostrarle un
+        //mensaje
+        if(estudiante.RAOPC == 0 && estudiante.DAOPC == 0){
+            alert("No ha insertado Nota");
+        }
+        $scope.modal.hide();
+        //CrearBDServ.guardarDatos(estudiante);
+        console.log("Empezamos------------------ guardar");
+        var cadenaArray = [];
+        for (var i = 0; i < arrayObj.length; i++){
+                if(estudiante.NRO == arrayObj[i].NRO){
+                    arrayObj[i] = estudiante;
+            };
+                if(arrayObj[i].RAOPC != undefined){//mesa
+                    cadenaArray [i] = CrearBDServ.unirDatosMesa(arrayObj[i]); 
+                }
+                if(arrayObj[i].ERPAR != undefined){//normal
+                    cadenaArray [i] = CrearBDServ.unirDatosNormal(arrayObj[i]); 
+                }
+        };
+        cadenaArray.push('');
+        cadenaArray.unshift('');
+        var cadenaUnida = cadenaArray.join();
+            console.log(CrearBDServ.unirFile(response.data, cadenaUnida, grupo.codP, grupo.tipo));
+            GuardarData.setDataSis(response.data);
+        //aqui debemos guardar en el fileService 
+      
+    };
+
+ }, function(response){});
+//guardar los datos del Estudiante
     
 })
 .controller('FileCtrl', function($scope, FileFact) {

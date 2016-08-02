@@ -54,18 +54,31 @@ angular.module('starter.directive', [])
                            }
                        }
                     scope.inputCtrl = ctrl;
-                    scope.$watch('inputCtrl.$valid', scope.mostrar(valorVal, valorM));  
-                })
+                    console.log(attrs.ngModel);
+                    if(attrs.ngModel == "estudiante.ERPAR" || attrs.ngModel == "estudiante.DOPAR" || attrs.ngModel == "estudiante.EXAFIN" || attrs.ngModel == "estudiante.da"){
+                        scope.$watch('inputCtrl.$valid', scope.mostrarN(valorVal, valorM, element.val(), attrs.opcion));
+                    }else{
+                        scope.$watch('inputCtrl.$valid', scope.mostrar(valorVal, valorM, element.val(), attrs.opcion));  
+                    }
+                });
+
         }
     }
-});
-
-/*
-        template : '<div ng-transclude>Hola Amiga</div>',
-        transclude : true,
-        require : '^fileOpcion',
+})
+.directive('notaNormal', function(){
+    return {
+        require : "ngModel",
+        restric : "A",
+        scope : true,
         link : function(scope, element, attrs, ctrl){
-            scope.mostrar();
+            var antVal ;
+            element.bind('keyup', function(){
+                var pattern = /^[1-9][0-9]?$|^100$/g;
+                var patternMax = /^[1-9][0-9]{2,3}$/g;
+                var patternVal = /^[1-9][0-9]*$/g
+                
+                console.log(element.val());
+            });
         }
     };
-});*/
+});

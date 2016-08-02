@@ -9,7 +9,10 @@ angular.module('starter.services', [])
     
     //Se conecta al servidor y le envia su header para permiso
    return   $http.get('http://localhost:3000/fileS', config)
-})
+})/*
+.factory('SisFact', function($http){
+    
+})*/
 .service('CrearBDServ', function(){
  //Dividiendo el archivo Sis 
     return {
@@ -31,20 +34,21 @@ angular.module('starter.services', [])
                                 delete obj._;
                                 console.log(Object.keys(obj).length);
                                 return  obj[template];
-
                         //fin body */
                      }
                  }
             }
         },
+
        //Separando por "," y eliminando el inicio y el final porq son campos vacios
         sepDatos : function(infoCadena){
+            console.log(infoCadena);
         var arrayInfo = infoCadena.split(",");
             arrayInfo.splice(0, 1);
             arrayInfo.splice(arrayInfo.length-1, 1);
             return arrayInfo;
         },
-
+        
         crearBDInf : function(array){
             return  newBD = {
                 'fechaC ' : array[0],
@@ -106,7 +110,54 @@ angular.module('starter.services', [])
                 'NOTFIN' : array[5],
                 'NOTCON' : array[6]
             };
-        }
+        },
+        //Unir datos
+        unirFile : function(data, cadenaListaE, codP, tipo){
+                    console.log(tipo);
+                    var array = [];
+                    if( tipo == 'ME'){
+                        array = cadenaListaE;
+                        ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
+                    }else{
+                       array = cadenaListaE;
+                       ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
+                     }
+            console.log(data);
+            return cadenaListaE;
+        },
+
+        unirDatosNormal : function(arrayObj){
+            var arrayAux = [];
+            var cadena;
+                arrayAux[0] = arrayObj.NRO;
+                arrayAux[1] = arrayObj.CODEST;
+                arrayAux[2] = arrayObj.NOMBRE;
+                arrayAux[3] = arrayObj.ERPAR;
+                arrayAux[4] = arrayObj.DOPAR;
+                arrayAux[5] = arrayObj.PROMED;
+                arrayAux[6] = arrayObj.EXAFIN;
+                arrayAux[7] = arrayObj.da;
+                arrayAux[8] = arrayObj.NOTFIN;
+                arrayAux[9] = arrayObj.NOTCON;
+                cadena = arrayAux.join();
+                return cadena;
+        },
+
+        unirDatosMesa : function(arrayObj){
+             var arrayAux = [];
+             var cadena;
+                arrayAux[0] = arrayObj.NRO;
+                arrayAux[1] = arrayObj.CODEST;
+                arrayAux[2] = arrayObj.NOMBRE;
+                arrayAux[3] = arrayObj.RAOPC;
+                arrayAux[4] = arrayObj.DAOPC;
+                arrayAux[5] = arrayObj.NOTFIN;
+                arrayAux[6] = arrayObj.NOTCON;
+                cadena = arrayAux.join();
+                return cadena;
+        },
+
+
     };
 })
 .service('ListaEstServ', function(){
@@ -121,5 +172,25 @@ angular.module('starter.services', [])
                     materia = codP;
                     tipo = grupo;
         }
+    }
+})
+.service('GuardarData', function(){
+    var data = {};
+    var dataSis = {};
+    return {
+        getDataSis : function(){
+            return dataSis
+        },
+        setDataSis : function(dataM){
+            console.log(dataM);
+            dataSis = dataM;
+        }
+    }
+})
+.service('GuardarListaEst', function(){
+    return {
+        guardarLE : function(estudiante){
+        console.log(estudiante);
+       }
     }
 });

@@ -1,9 +1,12 @@
-angular.module('starter').directive('ngMensaj', function(){
+angular.module('starter').directive('ngMensaje', function(){
     return {
-        templateUrl: "templates/mensaje.html",
+        templateUrl : "templates/mensaje.html",
+        replace : true,
+        restric : "AE",
         scope:{
-            title : "@",
-            mensaje : "="
-        }
+            mensaje : "=",
+            valor : "="
+        },
+        transclude: true
     }
 });
