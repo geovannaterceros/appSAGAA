@@ -1,18 +1,4 @@
 angular.module('starter.services', [])
-
-.factory('FileFact', function($http){
-
-    //Configura el header para obtener permiso y recuperar el json 
-    var config = {
-        headers : {'Accept' : 'application/json'}
-    };
-    
-    //Se conecta al servidor y le envia su header para permiso
-   return   $http.get('http://localhost:3000/fileS', config)
-})/*
-.factory('SisFact', function($http){
-    
-})*/
 .service('CrearBDServ', function(){
  //Dividiendo el archivo Sis 
     return {
@@ -28,13 +14,16 @@ angular.module('starter.services', [])
                     if(template == 'mesas'){
                         return (((((data.pcd).head)[0]).group)[0]).me;
                     }else{
-                    //bodyi 
+                    //body 
+                                
                                 var obj = ((((data.pcd).body)[0]).gradelist)[0];
                                 obj["_"] = null; 
                                 delete obj._;
+
+                                console.log(data.pcd);
                                 console.log(Object.keys(obj).length);
                                 return  obj[template];
-                        //fin body */
+                    //fin body */
                      }
                  }
             }
@@ -113,17 +102,20 @@ angular.module('starter.services', [])
         },
         //Unir datos
         unirFile : function(data, cadenaListaE, codP, tipo){
-                    console.log(tipo);
+                    console.log(data);
                     var array = [];
                     if( tipo == 'ME'){
                         array = cadenaListaE;
                         ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
+                        console.log(data);
                     }else{
                        array = cadenaListaE;
                        ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
+                       console.log(data);
                      }
-            console.log(data);
-            return cadenaListaE;
+            console.log(((((((data.pcd).body)[0]).gradelist)[0])[codP])[0]);
+            //return cadenaListaE;
+            return data;
         },
 
         unirDatosNormal : function(arrayObj){
@@ -140,6 +132,8 @@ angular.module('starter.services', [])
                 arrayAux[8] = arrayObj.NOTFIN;
                 arrayAux[9] = arrayObj.NOTCON;
                 cadena = arrayAux.join();
+               //porq se unen la cadena le hemos aumentado interleneado
+                cadena = cadena + "\r";
                 return cadena;
         },
 
@@ -154,6 +148,9 @@ angular.module('starter.services', [])
                 arrayAux[5] = arrayObj.NOTFIN;
                 arrayAux[6] = arrayObj.NOTCON;
                 cadena = arrayAux.join();
+                //se unen las cadenas modificadas por este motivo debemos
+                //aumentarle salto de linea
+                cadena =  cadena + "\r";
                 return cadena;
         },
 
@@ -165,10 +162,12 @@ angular.module('starter.services', [])
     var obj = {};
     return {
         getcodP : function(){
+                console.log("codP service get:"+ materia);
                 obj = {codP : materia, tipo : tipo };
                     return obj; 
         },
         setcodP : function(codP, grupo){
+            console.log("codP service set:"+ codP);
                     materia = codP;
                     tipo = grupo;
         }
@@ -179,7 +178,7 @@ angular.module('starter.services', [])
     var dataSis = {};
     return {
         getDataSis : function(){
-            return dataSis
+            return dataSis;
         },
         setDataSis : function(dataM){
             console.log(dataM);
@@ -193,4 +192,19 @@ angular.module('starter.services', [])
         console.log(estudiante);
        }
     }
+})
+.factory('sisFactory', function($http) {
+    var urlBase = 'http://localhost:3000';
+    //var sisFactory = {};
+    var config = {
+        headers : {'Accept' : 'application/json'}
+    };
+   // sisFactory.postDataSis = function (datos) {
+   //     return $http(urlBase + 'sisF', datos);
+   // },
+    //sisFactory.getDataSis = function(){
+        return $http.get(urlBase +'/fileS', config);
+   // }
+   // return sisFactory;
 });
+

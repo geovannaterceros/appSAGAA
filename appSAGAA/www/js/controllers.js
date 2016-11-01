@@ -1,15 +1,5 @@
 angular.module('starter.controllers', [])
-
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData) {
-
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-    console.log(GuardarData.getDataSis());
-  // Form data for the login modal
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory ) {
   $scope.loginData = {};
 
   // Create the login modal that we will use later
@@ -39,11 +29,20 @@ angular.module('starter.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
-  // Mi codigo menu
-  $scope.guardarLE = function(estudiante){
+  // Menu guarda el archivo sis
+  $scope.guardarLE = function(){
     console.log("ya podemos guardar");
-    console.log(estudiante);
-  }
+    console.log(GuardarData.getDataSis());
+    var data = GuardarData.getDataSis();
+    sisFactory.postDataSis(data).then(function(result){
+        console.log(result);
+    });
+    $location.path("/materias");
+  };
+ //Cerrar la lista de archivo sis
+ $scope.cerrarLE = function(){
+    console.log("cerrar la lista de estudiantes");
+ };
   //$scope.myGoBack = function(){
       if($ionicHistory.currentStateName() == "app.inicio"){
         $scope.mostrarAtras = true;
@@ -81,12 +80,12 @@ angular.module('starter.controllers', [])
     var bandera = false; 
     $scope.mostrar = bandera;
     $scope.showPopup = function() {
-         $scope.nuevoG = {};
-        var myPopup = $ionicPopup.show({
-        templateUrl: 'templates/seleccionar.html',
-        title: 'Gestion',
-     scope: $scope,
-     buttons:[
+    $scope.nuevoG = {};
+    var myPopup = $ionicPopup.show({
+    templateUrl: 'templates/seleccionar.html',
+      title: 'Gestion',
+      scope: $scope,
+      buttons:[
             {text: 'Cancelar'},
             {
                 text:'<b>Aceptar</b>',
@@ -104,27 +103,28 @@ angular.module('starter.controllers', [])
   };
 })
 //Obtener la Informacion Docente, Carrera, Facultad
-.controller('InformacionCtrl', function($scope, FileFact, CrearBDServ ) {
-    FileFact.then(
-        function(response){
-                var info = CrearBDServ.divFile(response.data, 'informacion');
-                var infoA = CrearBDServ.sepDatos(info);
-                var infoD = CrearBDServ.crearBDInf(infoA);
-                $scope.datos = infoD;
-         },
-         function(){
-             console.log("error obtener data");
-         });
+.controller('InformacionCtrl', function($scope, sisFactory, CrearBDServ ) {
+    console.log("factory");
+    var data = {};
+    sisFactory.getDataSis().then(function(result){
+        data = result;
+        var info = CrearBDServ.divFile(data, 'informacion');
+        var infoA = CrearBDServ.sepDatos(info);
+        var infoD = CrearBDServ.crearBDInf(infoA);
+        $scope.datos = infoD;
+    }).catch(function(result) {
+        console.log('Error en la conneccion' );
+    });
 })
-//Mostrar las materias 
-.controller('MateriasCtrl', function($scope, FileFact, CrearBDServ, ListaEstServ){
-    FileFact.then(
-        function(response){
+.controller('MateriasCtrl', function($scope, sisFactory, CrearBDServ, ListaEstServ){
+    sisFactory.getDataSis().then(
+        function(result){
+            console.log(result);
             var g = function(tipo){
                 var array = [];
                 var arrayObj = [];
                 var x = 0;
-                var grupo = CrearBDServ.divFile(response.data, tipo);
+                var grupo = CrearBDServ.divFile(result, tipo);
                 var grupoA = CrearBDServ.sepDatos(grupo[0]);
                 var grupoT = (grupoA.length)/13;
                 var ini = 0;
@@ -153,28 +153,29 @@ angular.module('starter.controllers', [])
             }
                     $scope.materias = g('materias');
                     $scope.mesas = g('mesas');
-            }, function(){
-                console.log("ERROR");
-           }
+            }
     );
     //enviar parametros entre controlador
     $scope.matEst = function(codP, tipo){
+        console.log("tipo Controller:" + codP);
         ListaEstServ.setcodP(codP, tipo);
     }
 
 })
 //Mostrar la lista de estudiantes segun la material seleccionanada
-.controller('EstudiantesCtrl', function($scope ,$ionicModal ,ListaEstServ ,FileFact ,CrearBDServ, GuardarData){
+.controller('EstudiantesCtrl', function($scope ,$ionicHistory ,$ionicModal ,ListaEstServ ,sisFactory ,CrearBDServ, GuardarData){
     var grupo  = ListaEstServ.getcodP();
+    console.log("Mis parametro q me llega del otro controlador:");
     console.log(grupo);
+    console.log("fin del parametro grupo");
     var arrayObj =[];
-    FileFact.then(function(response){
+    sisFactory.getDataSis().then(function(result){
         var l = function(numId){
             var array = [];
             var x = 0;//repartir
-            console.log(response.data);
+            console.log(result);
             console.log(grupo.codP);
-            var lista = CrearBDServ.divFile(response.data ,grupo.codP);//devuelve una cadena de datos 
+            var lista = CrearBDServ.divFile(result ,grupo.codP);//devuelve una cadena de datos 
             console.log(lista);
             var listaA = CrearBDServ.sepDatos(lista[0]);//separa por coma y quita la primera y ultima q son vacios 
             var listaT = (listaA.length)/numId;  
@@ -187,7 +188,6 @@ angular.module('starter.controllers', [])
                         x++;
                     }
                        if(numId == 10){
-                        
                             arrayObj[i] = CrearBDServ.crearBDListaEstN(array);
                        }
                        if(numId == 7){
@@ -201,14 +201,11 @@ angular.module('starter.controllers', [])
                 console.log("how to makeing-------------");
                 console.log("size::"+arrayObj.length);
                 for(var i = 0; i< arrayObj.length; i++){
-                    console.log(arrayObj[i]);
                     if(arrayObj[i] === '{}'){
-                         console.log(arrayObj[i]);
                          arrayObj.splice(i, 1);
                      }
                     else{
                         if(i == 0){
-                        console.log(arrayObj[i]);
                         arrayObj.splice(i, 1);
                         }
                     }
@@ -354,20 +351,27 @@ angular.module('starter.controllers', [])
         var cadenaArray = [];
         for (var i = 0; i < arrayObj.length; i++){
                 if(estudiante.NRO == arrayObj[i].NRO){
+                    console.log('estudiante.nro'+ arrayObj[i]);
                     arrayObj[i] = estudiante;
-            };
+                };
                 if(arrayObj[i].RAOPC != undefined){//mesa
+                    console.log('1raOpc'+ arrayObj[i]);
                     cadenaArray [i] = CrearBDServ.unirDatosMesa(arrayObj[i]); 
                 }
                 if(arrayObj[i].ERPAR != undefined){//normal
+                    console.log('2daOpc'+ arrayObj[i]);
                     cadenaArray [i] = CrearBDServ.unirDatosNormal(arrayObj[i]); 
                 }
         };
         cadenaArray.push('');
         cadenaArray.unshift('');
         var cadenaUnida = cadenaArray.join();
-            console.log(CrearBDServ.unirFile(response.data, cadenaUnida, grupo.codP, grupo.tipo));
-            GuardarData.setDataSis(response.data);
+            console.log(cadenaUnida);
+            console.log("codP"+grupo.codP);
+            console.log("tipo"+grupo.tipo);
+        //empezar a unir en el file
+        
+            GuardarData.setDataSis(CrearBDServ.unirFile(result, cadenaUnida, grupo.codP, grupo.tipo));
         //aqui debemos guardar en el fileService 
       
     };
@@ -376,13 +380,13 @@ angular.module('starter.controllers', [])
 //guardar los datos del Estudiante
     
 })
-.controller('FileCtrl', function($scope, FileFact) {
+.controller('FileCtrl', function($scope, sisFactory) {
 
     $scope.showContent = function($fileContent){
             $scope.content = $fileContent;
     };
 
-        FileFact.then(
+        sisFactory.getDataSis.then(
             function(response){
                 console.log(response.data);
             },
