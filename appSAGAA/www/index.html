@@ -3,24 +3,39 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
     <title></title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/app.scss" rel="stylesheet">
-
+    <link href="css/custom-app.css" rel="stylesheet">
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
-    <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <!-- ionic/angularjs js 
+        <script src="lib/ionic/js/ionic.bundle.js"></script>!-->
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-animate/angular-animate.js"></script>
+    <script src="lib/angular-sanitize/angular-sanitize.js"></script>
+    <script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="lib/ionic/js/ionic.js"></script>
+    <script src="lib/ionic/js/ionic-angular.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
     
     <!--agregar el ng-cordova  -->
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="lib/satellizer.js"></script>
+
+    <!--para el json web token
+        <script src="lib/angular-jwt.js"></script>!-->
+    <script src="lib/angular-jwt.min.js"></script>
+
+    <!--para el localstorage!-->
+    <script src="lib/ngstorage/ngStorage.js"></script>
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
@@ -28,10 +43,10 @@
     <script src="js/ngMensaje.js"></script>
     <script src="js/fileService.js"></script>
     <script src="js/fileFactory.js"></script>
+    <script src="js/networkFactory.js"></script>
     <script src="js/fileFilter.js"></script>
     <script src="js/fileDirective.js"></script>
   </head>
-   
   <body ng-app="starter">
     <ion-nav-bar align-title="center" class="bar bar-header bar-positive ">
     </ion-nav-bar>

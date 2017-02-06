@@ -1,4 +1,4 @@
-<ion-view view-title="SAGAA">
+<!--<ion-view view-title="Inicio">
     <ion-content class="central" scroll="false" >
             <div class="col header text-center">
                 <img src="./img/fcyt.png" class="logo"/>
@@ -15,4 +15,21 @@
                 </button>
             </div>
     </ion-content>
+</ion-view>!-->
+<ion-view view-title="Iniciar Session" class="loginBg" hide-nav-bar="true" >
+  <ion-content class="padding">
+  <div class="row responsive-sm padding remvoeBP">
+    <div class="col">
+        <br><br><br><br>
+        <div class="app-logo"><img src="img/fcyt.png"></div>
+        <div class="list list-inset removePM">
+            <label class="item item-input"><input type="text" ng-model="user.username" placeholder="Usuario" > </label>
+            <label class="item item-input"><input type="password" ng-model="user.password" placeholder="Contrasenha" > </label>
+        </div>
+        <div class="loginButton">
+            <button class="button ion-unlocked button-block button-positive" ng-click="login(user)"</button>
+        </div>
+    </div>
+  </div>
+  </ion-content>
 </ion-view>

@@ -43,7 +43,6 @@ angular.module('starter.controllers', [])
  $scope.cerrarLE = function(){
     console.log("cerrar la lista de estudiantes");
  };
-  //$scope.myGoBack = function(){
       if($ionicHistory.currentStateName() == "app.inicio"){
         $scope.mostrarAtras = true;
       }else{
@@ -51,7 +50,6 @@ angular.module('starter.controllers', [])
       }
     console.log($ionicHistory.currentStateName());
     console.log("volver atras");
-  //}
 
 })
 
@@ -68,39 +66,100 @@ angular.module('starter.controllers', [])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
-.controller('InicioCtrl', function($scope, $ionicLoading){
-    $scope.mensaje = function(){
-      return  "No hay red";
-    };
-    $ionicLoading.show();
-        setTimeout(function(){
-             $ionicLoading.hide();}, 3000);
-})
-.controller('GestionCtrl', function($scope, $ionicPopup, $timeout){
-    var bandera = false; 
-    $scope.mostrar = bandera;
-    $scope.showPopup = function() {
-    $scope.nuevoG = {};
-    var myPopup = $ionicPopup.show({
-    templateUrl: 'templates/seleccionar.html',
-      title: 'Gestion',
-      scope: $scope,
-      buttons:[
-            {text: 'Cancelar'},
-            {
-                text:'<b>Aceptar</b>',
-                onTap: function(e){
-                    console.log($scope.nuevoG.checked);
-                    $scope.data= $scope.nuevoG.checked;
-                    bandera = !bandera;
-                    $scope.mostrar = bandera;
-                }  
-            }]
-   });
-   myPopup.then(function(res) {
-     console.log('Tapped!', res);
-   });
+.controller('InicioCtrl', function($scope, $ionicLoading, $location, $ionicModal, $ionicPopover, $ionicPopup, ConnectivityMonitor, sisFactory){
+  //--------biging Session ------------//
+  //$scope.loginData = {};
+
+  //--------------------------------------------
+   $scope.login = function(user) {
+
+        if(typeof(user)=='undefined'){
+            $scope.showAlert('Debe ingresar usuario y password.');	
+	    	return false;
+	}
+
+        if(user.username=='admin@gmail.com' && user.password=='admin'){
+		//verificate networking
+            $ionicLoading.show({
+                template: 'Verificando la red...',
+                duration: 3000
+            });
+           setTimeout(function(){
+             $ionicLoading.hide().then(function(){
+                   console.log(ConnectivityMonitor.isOnline());
+                 });
+             }, 3000);
+            
+            if(ConnectivityMonitor.isOnline()){
+                console.log(ConnectivityMonitor.isOnline());
+                //connectarme a mi servidor auxiliar
+                //This petion, interceptor in service
+                sisFactory.posDataUsuario(user).then(function(result){
+                    console.log("response of DataUsuario");
+                    console.log(result);    
+                });
+            
+            }else{
+                 $scope.showAlert("No hay conneccion a internet");
+                 console.log(ConnectivityMonitor.isOnline());
+                 $location.path('/app/inicio');
+            }
+    	}else{
+		$scope.showAlert('Invalido usuario o password.');
+	}
   };
+  //----------------Falta hacer el logout----------------------------
+  $scope.logout = function() {
+      $location.path('/app/inicio');
+  };
+  //--------------------------------------------
+   // An alert dialog
+   $scope.showAlert = function(msg) {
+       var alertPopup = $ionicPopup.alert({
+	 title: '!Importante!',
+	 template: msg
+   });
+ };
+})
+.controller('GestionCtrl', function($scope, $ionicPopup, $timeout, sisFactory, $location, GestionDato){
+    sisFactory.posDataGestion().then(function(result){
+        console.log(result);
+        $scope.gestiones = result;
+    });
+    $scope.gestion = function (g){
+        GestionDato.setGestion(g);
+        console.log(g);
+        $location.path("/app/seleccionar");
+    }
+})
+.controller('SeleccionarCtrl', function($scope, $location, GestionDato, CarreraDato,sisFactory){
+    
+    console.log(GestionDato.getGestion());
+
+    sisFactory.posDataCarrera(GestionDato.getGestion()).then(function(result){
+        console.log(result);
+        $scope.carreras = result;
+    });
+
+    $scope.listaC = function (c){
+        console.log(c);
+        CarreraDato.setCarrera(c);
+        $location.path("/app/detalle");
+    }
+})
+.controller('DetalleCtrl', function($scope, CarreraDato, sisFactory, $location){
+    
+    console.log(CarreraDato.getCarrera())
+    $scope.detalle = CarreraDato.getCarrera();
+    console.log("estamos mostrando el detalle de");
+
+    $scope.descargar = function(carrera){
+        console.log(carrera);
+        sisFactory.posDataDetalle(carrera).then(function(result){
+            console.log(result);
+        }); 
+        $location.path("/app/informacion");
+    }
 })
 //Obtener la Informacion Docente, Carrera, Facultad
 .controller('InformacionCtrl', function($scope, sisFactory, CrearBDServ ) {

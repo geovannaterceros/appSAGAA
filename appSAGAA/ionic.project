@@ -1,4 +1,15 @@
 {
   "name": "appSAGAA",
-  "app_id": ""
+  "app_id": "",
+  "xwalk_hosts": [
+    "http://*/",
+    "https://*/"
+  ],
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
+  ]
 }

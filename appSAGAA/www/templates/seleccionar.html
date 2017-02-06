@@ -1,4 +1,15 @@
-<ion-list>
-    <ion-radio ng-model="nuevoG.checked" ng-value="'2-2010'">2-2010 SEGUNDO SEMESTRE</ion-radio>
-    <ion-radio ng-model="nuevoG.cheched" ng-value="'1-2010'">1-2010 PRIMER SEMESTRE</ion-radio>
-</ion-list>
+<ion-view title="Lista de Carreras">
+    <ion-content>
+        <ion-list>
+          <ion-item ng-click="listaC(carreras.plan1)">
+            {{carreras.plan1.plan}}
+          </ion-item>
+          <ion-item ng-click="listaC(carreras.plan2)">
+            {{carreras.plan2.plan}}
+          </ion-item>
+          <ion-item ng-click="listaC(carreras.plan3)">
+            {{carreras.plan3.plan}}
+          </ion-item>
+        </ion-list>     
+    </ion-content>
+</ion-view>

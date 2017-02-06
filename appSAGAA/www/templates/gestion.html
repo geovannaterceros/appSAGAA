@@ -1,25 +1,12 @@
-<ion-view view-title="Descargar Planilla de Notas"  >
-    <ion-content class="central">
-      <div class= "list">
-          <div clas="item item-dividir">Seleccionar Gestion</div>
-            <div list list-inset>
-                <label class="item item-input ">
-                    <input type="text" ng-model="data" placeholder="Gestion" ng-click="showPopup()"/>
-                </label>
-            </div>
-         <div class="item item-dividir" ng-show="mostrar" >Lista de Carreras</div>
-         <div ng-show="mostrar">
-                <div class="list">
-                     <div  class="item item-icon-right">
-                        Ingenieria Electronica
-                        <a href="#/app/informacion"><i class="icon ion-ios-cloud-download-outline" ></i></a> 
-                     </div>
-                     <div class="item item-icon-right">
-                         Lic. Informatica
-                        <a href="#/app/informacion"><i class="icon ion-ios-cloud-download-outline" ></i></a> 
-                     </div>
-                 </div>     
-        </div>
-      </div>  
+<ion-view view-title="Lista de Gestion">
+    <ion-content>
+      <ion-list>
+      <ion-item ng-click="gestion(gestiones.gestion1)">
+            {{gestiones.gestion1}}
+         </ion-item>
+         <ion-item ng-click="gestion(gestiones.gestion2)">
+            {{gestiones.gestion2}}
+          </ion-item>
+      </ion-list>
     </ion-content>
 </ion-view>

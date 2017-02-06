@@ -15,10 +15,14 @@
    var path = require('path');
    var replace = require('replace'); 
    var glob = require('glob');
+   var jwt = require('jsonwebtoken'); 
+   var Base64 = require('js-base64').Base64;
+   var mySecretKey = "1234asdfLKKJH";
    // permite recibir datos, del http.post 
    app.use(bodyParser.json());
    app.use(bodyParser.urlencoded({ extended: true }));
-    
+   app.use(bodyParser.json({ type: 'application/*+json' }));
+
    var path1 = '../archivo/original4.sis';
    fs.readFile(path1 , 'utf8', function (err,data) {
        if (err) {
@@ -39,8 +43,9 @@
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Accept", "application/json");
    
-    
+   //ayuda a modificar en tiempo real al file 
         fs.watch(path1, function(event, targetfile){
             console.log(event + targetfile);
             if(event == "change"){
@@ -57,16 +62,152 @@
 
     app.post('/sisF', function(req, res){
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    console.log('POST /');
-    sisF(req.body);
-
-    res.end('thanks');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        console.log('POST /');
+        sisF(req.body);
+        
+        res.end('thanks');
    });
+    //beging la parte de la aplicacion SAGAA
+    //Realizando la session al servidro del SAGAA
+    app.post('/datosU', function(req, res){
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Accept', 'application/json');
+         res.setHeader('Content-Type', 'application/json');
+        console.log('POST /');
+        console.log(req.body); 
+        var credentials = {
+            username : req.body.username,
+            password : req.body.password
+        };
+        //Deberia comparar con los datos del servidor del SAGAA, after send to
+        //SAGAA
+        if(credentials.username == 'admin@gmail.com' && credentials.password =='admin'){
+            
+            var cred64 = Base64.encode(credentials);
+            var token = jwt.sign(credentials, mySecretKey);
+            console.log(token);
+            return res.status(200).json(token);
+        }else{
+            return res.status(500).json({
+                msg: "Error los datos son incorrectos no se puede loguear al SAGAA"
+            });
+        }
+    });
+    //Realizando la peticion para la Seleccion de Elegir la Gestion
+    app.post('/gestion', function(req, res){
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Accept', 'application/json');
+        res.setHeader('Content-Type', 'application/json');
+        console.log('POST /');
+        var token = null;
+        //Datos auxiliares del SAGAA
+        var listaG = {
+            gestion1 : "1-2016 PRIMER SEMESTRE",
+            gestion2 : "2-2016 SEGUNDO SEMESTRE"
+        }
+        console.log(req.headers);
+          if(req.headers.authorization){
+            var authorization = req.headers.authorization.split(' ');
+            console.log(authorization);
+            if(authorization.length == 2){
+                var key = authorization[0];
+                var val = authorization[1];
+                if(key == "Bearer"){
+                    console.log("la clave:"+val);
+                    console.log("comparamos el jwt si es correcto");
+                    return res.status(200).json(listaG);
+                }else{
+                   return res.status(500).json({msg:"no eres el correcto amigo, fuera de aqui"});
+                }
+            }
+            else{
+                console.log("Usted no tiene permiso para ingresar");
+                return res.status(400).json({msg:"no tiene permiso para entrar"})
+            }
+          }else{
+            console.log("there isnt't authorize")
+            return res.status(505).json({msg:"so so"});
+          }
+       });
 
+    app.post('/carrera', function(req, res){
+        console.log('POST /');
+        var token = null;
+        //Datos auxiliares del SAGAA
+        var listaC = {
+            plan1 : {
+                plan :'Ing. Electronica',
+                archivo : 'COSTAS_VLADIMIR_123456_1_2016.sis',
+                numeroDC : '2',
+                ultimaFD : '10:30 10-11-2016'},
+
+            plan2 : {
+                plan : 'Ing. Sistemas',
+                archivo : 'COSTAS_VLADIMIR_123456_2_2016.sis',
+                numeroDC : '5',
+                ultimaFD : '12:30 15-11-2016'},
+
+            plan3 : {
+                plan : 'Lic. Informatica',
+                archivo : 'COSTAS_VLADIMIR_12345_3_2016.sis',
+                numeroDC : '5',
+                ultimaFD : '12:30 15-11-2016'},
+        }
+        console.log(req.body); 
+        var authorization = req.headers.authorization.split(' ');
+            console.log(authorization);
+            if(authorization.length == 2){
+                var key = authorization[0];
+                var val = authorization[1];
+                if(key == "Bearer"){
+                    console.log("la clave:"+val);
+                    console.log("comparamos el jwt si es correcto");
+                    return res.status(200).json(listaC);
+                }else{
+                   return res.status(500).json({msg:"no eres el correcto amigo, fuera de aqui"});
+                }
+            }
+            else{
+                console.log("Usted no tiene permiso para ingresar");
+                return res.status(400).json({msg:"no tiene permiso para entrar"})
+            }
+    });
+
+    app.post('/detalle', function(req, res){
+
+        console.log('POST /');
+        var token = null;
+        console.log(req.body); 
+        var authorization = req.headers.authorization.split(' ');
+            console.log(authorization);
+            if(authorization.length == 2){
+                var key = authorization[0];
+                var val = authorization[1];
+                if(key == "Bearer"){
+                    console.log("la clave:"+val);
+                    console.log("comparamos el jwt si es correcto");
+                    return res.status(200).json({msg:"esta pidiendo al servidor, para descargar un file"});
+                }else{
+                   return res.status(500).json({msg:"no eres el correcto amigo, fuera de aqui"});
+                }
+            }
+            else{
+                console.log("Usted no tiene permiso para ingresar");
+                return res.status(400).json({msg:"no tiene permiso para entrar"})
+            }
+    });
+   //trabajo extra del servidor, esta bien q haga esto mas
+   //jajajaajaj aun no lo se
    var fileS = function(data){
         var nuevoFile;
            nuevoFile = data.split(/\n/);
@@ -188,6 +329,6 @@
         return xml;
     };
     
-   app.listen(3000, function () {
-      console.log('Example app listening on port 3000!');
+   app.listen(8080, function () {
+      console.log('Example app listening on port 8080!');
    });

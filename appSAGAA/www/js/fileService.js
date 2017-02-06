@@ -193,7 +193,30 @@ angular.module('starter.services', [])
        }
     }
 })
-.factory('sisFactory', function($http) {
+//services for SAGAA chango data
+.service('GestionDato', function(){
+    var gestion;
+    return {
+        setGestion: function(g){
+            gestion = g;
+        },
+        getGestion : function(){
+            return gestion;
+        }
+    }
+})
+.service('CarreraDato', function(){
+    var carrera;
+    return {
+        setCarrera: function(c){
+            carrera = c;
+        },
+        getCarrera : function(){
+            return carrera;
+        }
+    }
+})
+/*.factory('sisFactory', function($http) {
     var urlBase = 'http://localhost:3000';
     //var sisFactory = {};
     var config = {
@@ -206,5 +229,60 @@ angular.module('starter.services', [])
         return $http.get(urlBase +'/fileS', config);
    // }
    // return sisFactory;
-});
+})*/
+//Beging save offline
+.service('myInterceptor', function($q, logHttp){
+    return {
+        'request': function(config){
+            //si realiza para cuando los enviamos
+            //necesito este dato para save el envio
+           logHttp.push(config);
+            console.log("The request good");
+            return config;
+        },
 
+        'requestError': function(rejection){
+             console.log("It request have error");
+             return $q.reject(rejection);
+        },
+
+        'response': function(response){
+            return response;
+        },
+
+        'responseError': function(rejection){
+            //necesito este dato para ver q la respuesta es correcta
+            //verificar q me responde el backend
+            console.log("tenemos algun ERROR");
+            if(rejection.status === 404){
+                console.log("error en la coneccion");
+            }
+            if(rejection.status === -1){
+                console.log("error de -1");
+            }
+            
+               logHttp.pushR(rejection);
+            return $q.reject(rejection);
+        }
+    }
+})
+.service('logHttp', function($q) {
+   var requestsConfig = [];
+   var responseConfig = [];
+    return {
+        push: function(config) {
+            requestsConfig = config;
+        },
+        getAllRequests: function() {
+            console.log($q.reject(requestsConfig));
+            return requestsConfig;
+        },
+        pushR: function(config){
+            responseConfig = config;
+        },
+        getAllResponse: function(){
+           // console.log($q.reject());
+            return responseConfig;
+        }
+    }
+});

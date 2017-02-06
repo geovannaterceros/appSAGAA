@@ -1,15 +1,26 @@
-<ion-view>
+<ion-view title="Detalle">
     <ion-content>
-        <ion-list>
-          <ion-item>
-            <a href="#/app/transcriptor">Ingenieria Electronica</a>
-          </ion-item>
-          <ion-item>
-            Lic. Informatica
-          </ion-item>
-          <ion-item>
-            Ing. Sistemas
-          </ion-item>
-        </ion-list>     
+        <div class="list list-inset">
+          <div class="item">
+              <h2>Plan</h2>
+              <p>{{detalle.plan}}</p>
+          </div>
+          <div class="item">
+              <h2>Archivo</h2>
+              </p>{{detalle.archivo}}</p>
+          </div>
+          <div class="item">
+              <h2>Numero de Descargas</h2>
+              <p>{{detalle.numeroDC}}</p>
+          </div>
+          <div class="item">
+              <h2>Ultima Fecha de Descarga</h2>
+              <p>{{detalle.ultimaFD}}</p>
+          </div>
+          <a  class="button item item-icon-left" ng-click="descargar(detalle)" href="javascript:void(0);">
+              <h2>Descargar</h2>
+              <i class="icon ion-android-download"></i>
+          </a>
+        </div>
     </ion-content>
 </ion-view>
