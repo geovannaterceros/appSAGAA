@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter.services', 'starter.filter', 'starter.directive', 'starter.factorys', 'starter.networkfactorys','ngCordova', 'ngStorage', 'angular-jwt'])
+angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter.services', 'starter.filter', 'starter.directive', 'starter.factorys', 'starter.networkfactorys','ngCordova', 'ngStorage', 'angular-jwt', 'ionic-material', 'ionMdInput'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -42,7 +42,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
             templateUrl: 'templates/gestion.html',
             controller: 'GestionCtrl'
             }
-        }
+     }
   })
   .state('app.seleccionar', {
     url : '/seleccionar',
@@ -51,7 +51,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
             templateUrl: 'templates/seleccionar.html',
             controller: 'SeleccionarCtrl'
             }
-        }
+     },
+     cache: false
   })
   .state('app.detalle', {
     url : '/detalle',
@@ -94,7 +95,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
             controller : 'EstudiantesCtrl'
         },
         'menuListaDerecha' : {
-            templateUrl: 'templates/menuDerecho.html',
+            templateUrl: 'templates/menuDerecho.html'
         }
      },
     cache: false
@@ -109,6 +110,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
 
   jwtOptionsProvider.config({
        //whiteListedDomains: ['167.157.28.244'],
+       //whiteListedDomains: ['localhost', '192.168.0.105'],
        whiteListedDomains: ['localhost', '192.168.43.226'],
        tokenGetter: function(options, jwtHelper){
          var token = localStorage.getItem('id_token');
@@ -121,12 +123,12 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
         responseError: function(rejection) {
         //Maybe do some kind of check right here           
          logHttp.push(rejection.config);
-         /*if(localStorage.getItem('id_request')){
-            console.log("ya hay una guardo");
+         if(localStorage.getItem('id_request')){
+            console.log("hay error, lo guardamos");
          }
          else{
             localStorage.setItem('id_request', logHttp.getAllRequests());
-         }*/
+         }
             return $q.reject(rejection);
         }
     }

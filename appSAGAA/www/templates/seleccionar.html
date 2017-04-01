@@ -1,15 +1,18 @@
 <ion-view title="Lista de Carreras">
     <ion-content>
-        <ion-list>
-          <ion-item ng-click="listaC(carreras.plan1)">
+        <div class="list card">
+          <a href="javascript:void(0);" class="item item-icon-left" ng-click="listaC(carreras.plan1)">
+            <i class="ion-android-list"></i>
             {{carreras.plan1.plan}}
-          </ion-item>
-          <ion-item ng-click="listaC(carreras.plan2)">
+          </a>
+          <a href="javascript:void(0);" class="item item-icon-left" ng-click="listaC(carreras.plan2)">
+            <i class="ion-android-list"></i>
             {{carreras.plan2.plan}}
-          </ion-item>
-          <ion-item ng-click="listaC(carreras.plan3)">
+          </a>
+          <a href="javascript:void(0);" class="item item-icon-left" ng-click="listaC(carreras.plan3)">
+            <i class="ion-android-list"></i>
             {{carreras.plan3.plan}}
-          </ion-item>
-        </ion-list>     
+          </a>
+        </div>
     </ion-content>
 </ion-view>

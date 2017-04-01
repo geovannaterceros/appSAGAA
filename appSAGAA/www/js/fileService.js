@@ -231,23 +231,37 @@ angular.module('starter.services', [])
    // return sisFactory;
 })*/
 //Beging save offline
-.service('myInterceptor', function($q, logHttp){
+.service('myInterceptor', function($q, $timeout, logHttp){
     return {
         'request': function(config){
             //si realiza para cuando los enviamos
             //necesito este dato para save el envio
            logHttp.push(config);
-            console.log("The request good");
+           console.log("entro al request sin errores");
             return config;
         },
 
         'requestError': function(rejection){
-             console.log("It request have error");
+            console.log("It request have error");
+            window.localStorage.setItem('id_request', data);
+            console.log("cuando existe problemas in request");
+            // $rootScope.$broadcast("msg");
+            // $rootScope.$on("msg", function(){
+             alert('Existe algun error en la peticion');
+          // });
              return $q.reject(rejection);
         },
 
         'response': function(response){
-            return response;
+            console.log("The request good");
+            if(window.localStorage.getItem('id_request')){
+                window.localStorage.removeItem('id_request');
+                console.log("elimino id_request");
+            }
+            return $timeout(function(){
+                return response;
+            });
+
         },
 
         'responseError': function(rejection){
@@ -256,12 +270,22 @@ angular.module('starter.services', [])
             console.log("tenemos algun ERROR");
             if(rejection.status === 404){
                 console.log("error en la coneccion");
+                window.localStorage.setItem('id_request', data);
+               // window.location.reload();
+               //  $state.reload();
+
             }
             if(rejection.status === -1){
                 console.log("error de -1");
+             alert('Existe algun error en la respuesta');
+                window.localStorage.setItem('id_request', data);
+                //window.location.reload();
+                //  $state.reload();
             }
-            
-               logHttp.pushR(rejection);
+           //$rootScope.$broadcast("msg");
+           //$rootScope.$on("msg", function(){
+           //});
+            logHttp.pushR(rejection);
             return $q.reject(rejection);
         }
     }
@@ -271,18 +295,119 @@ angular.module('starter.services', [])
    var responseConfig = [];
     return {
         push: function(config) {
+            console.log("push");
             requestsConfig = config;
         },
         getAllRequests: function() {
+            console.log("entra al All request");
             console.log($q.reject(requestsConfig));
             return requestsConfig;
         },
         pushR: function(config){
+            console.log("entro al pushR");
             responseConfig = config;
         },
         getAllResponse: function(){
-           // console.log($q.reject());
+            console.log("entro al get Response");
+            console.log($q.reject());
             return responseConfig;
+        }
+    }
+})
+.service('SagaaService', function($q) {
+     var _db;    
+    var _sagaas;
+
+    return {
+        initDB: initDB,
+
+        getAllSagaas: getAllSagaas,
+        addSagaa: addSagaa,
+        updateSagaa: updateSagaa,
+        //deleteSagaa: deleteSagaa,
+        
+    };
+
+    function initDB() {
+        // Creates the database or opens if it already exists
+        _db = new PouchDB('sagaa', {adapter: 'websql'});
+    };
+
+    function addSagaa(sagaa) {  
+        console.log("This add");
+        return $q.when(_db.post(sagaa));
+    };
+
+    function updateSagaa(sagaa) {  
+        console.log("this update");
+        return $q.when(_db.put(sagaa));
+    };
+
+    function deleteSagaa(sagaa) {
+        console.log("this delete");
+        return $q.when(_db.remove(sagaa));
+    };
+
+   function getAllSagaas() {
+    if (!_sagaas) {
+       return $q.when(_db.allDocs({ include_docs: true}))
+            .then(function(docs) {
+                // Each row has a .doc object and we just want to send an 
+                // array of birthday objects back to the calling controller,
+                // so let's map the array to contain just the .doc objects.
+                _sagaas = docs.rows.map(function(row) {
+                    // Dates are not automatically converted from a string.
+                  //  row.doc.Date = new Date(row.doc.Date);
+                    return row.doc;
+                });
+                // Listen for changes on the database.
+                _db.changes({ live: true, since: 'now', include_docs: true})
+                   .on('change', onDatabaseChange);
+                return _sagaas;
+            });
+    } else {
+        // Return cached data as a promise
+        return $q.when(_sagaas);
+    }
+  };
+function onDatabaseChange(change) {  
+    var index = findIndex(_sagaas, change.id);
+    var sagaa = _sagaas[index];
+
+    if (change.deleted) {
+        if (sagaa) {
+            _sagaas.splice(index, 1); // delete
+        }
+    } else {
+        if (sagaa && sagaa._id === change.id) {
+            _sagaas[index] = change.doc; // update
+        } else {
+            _sagaas.splice(index, 0, change.doc) // insert
+        }
+    }
+}
+
+// Binary search, the array is by default sorted by _id.
+function findIndex(array, id) {  
+    var low = 0, high = array.length, mid;
+    while (low < high) {
+    mid = (low + high) >>> 1;
+    array[mid]._id < id ? low = mid + 1 : high = mid
+    }
+    return low;
+}
+})
+.service('ObjetoService', function() {
+    return {
+        getObjeto : getObjeto
+    }
+
+    function getObjeto(dato, sagaa){
+        for(var i = 0; i<sagaa.length; i++){
+            console.log(sagaa[i]);
+            if( sagaa[i].dato){
+                return i;
+            }
         }
     }
 });

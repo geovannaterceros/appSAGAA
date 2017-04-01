@@ -1,26 +1,37 @@
 <ion-view title="Detalle">
     <ion-content>
-        <div class="list list-inset">
-          <div class="item">
-              <h2>Plan</h2>
-              <p>{{detalle.plan}}</p>
+        <div class="card">
+          <div class="item item-divider">
+              <h2 class="subtitulo">Plan</h2>
           </div>
-          <div class="item">
-              <h2>Archivo</h2>
-              </p>{{detalle.archivo}}</p>
+          <div class="item item-text-wrap">
+              {{detalle.plan}}
           </div>
-          <div class="item">
-              <h2>Numero de Descargas</h2>
-              <p>{{detalle.numeroDC}}</p>
+          <div class="item item-divider">
+              <h2 class="subtitulo">Archivo</h2>
           </div>
-          <div class="item">
-              <h2>Ultima Fecha de Descarga</h2>
-              <p>{{detalle.ultimaFD}}</p>
+          <div class="item item-text-wrap">
+             {{detalle.archivo}}
           </div>
-          <a  class="button item item-icon-left" ng-click="descargar(detalle)" href="javascript:void(0);">
-              <h2>Descargar</h2>
+          <div class="item item-divider">
+              <h2 class="subtitulo">Numero de Descargas</h2>
+          </div>
+          <div class="item item-text-wrap">
+              {{detalle.numeroDC}}
+          </div>
+          <div class="item item-divider">
+              <h2 class="subtitulo">Ultima Fecha de Descarga</h2>
+          </div>
+          <div class="item item-text-wrap">
+              {{detalle.ultimaFD}}
+          </div>
+          <div class="item item-divider">
+              <h2 class="subtitulo">Descargar</h2>
+          </div>
+          <div class="item item-text-wrap">
+           <button  class="button button-positive " ng-click="descargar(detalle)">
               <i class="icon ion-android-download"></i>
-          </a>
-        </div>
+           </button>
+          </div>
     </ion-content>
 </ion-view>

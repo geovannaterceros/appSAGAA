@@ -1,55 +1,76 @@
 <ion-modal-view>
      <ion-header-bar class="bar bar-header bar-positive">
+
         <h1 class="title">Notas</h1>
-        <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+        <button class="button button-icon ion-android-cancel" ng-click="modal.hide()"></button>
      </ion-header-bar>
     <ion-content>
-       <div class="list">
-         <label class="item item-input item-stacked-label">
-            <span class="input-label">Codigo SIS</span>
-            <input type="text" ng-disabled="true" placeholder="{{estudiante.CODEST}}" ng-model="estudiante.CODEST"/>
-         </label>
-         <label class="item item-input item-stacked-label">
-            <span class="input-label">Nombre</span>
-            <input type="text" ng-disabled="true" placeholder="{{estudiante.NOMBRE}}" ng-model="estudiante.NOMBRE"/>
-         </label>
-         <label class="item item-input item-stacked-label">
-             <span class="input-label">1er Parcial</span>
+     <div class="card">
+        <div class="item item-divider">
+            <h2 class="subtitulo">Codigo SIS</h2>
+        </div>
+        <div class="item item-text-wrap">
+          <input type="text" ng-disabled="true" placeholder="{{estudiante.CODEST}}" ng-model="estudiante.CODEST"/>
+        </div>
+        <div class="item item-divider">
+            <h2 class="subtitulo">Nombre</h2>
+        </div>
+        <div class="item item-wrap">
+          <input type="text" ng-disabled="true" placeholder="{{estudiante.NOMBRE}}" ng-model="estudiante.NOMBRE"/>
+        </div>
+        <div class="item item-divider">
+             <h2 class="subtitulo">1er Parcial</h2>
+        </div>
+        <div class="item item-wrap">
              <input type="text" ng-model="estudiante.ERPAR" placeholder="Primer Parcial" opcion="primerP"  only-num/>
             <ng-mensaje mensaje="errorPM"></ng-mensaje>
             <ng-mensaje valor="!errorPV"></ng-mensaje>
-        </label>
-        <label class="item item-input item-stacked-label">
-             <span class="input-label">2do Parcial</span>
+        </div>
+        <div class="item item-divider">
+             <h2 class="subtitulo">2do Parcial</span>
+        </div>
+        <div class="item item-wrap">
              <input type="text" ng-model="estudiante.DOPAR" placeholder="Segundo Parcial" opcion="segundoP" only-num/>
             <ng-mensaje mensaje="errorSM"></ng-mensaje>
             <ng-mensaje valor="!errorSV"></ng-mensaje>
-        </label>
-        <label class="item item-input item-stacked-label">
-            <span class="input-label">PROMEDIO</span>
-            <input type="text" ng-disabled="true" ng-model="estudiante.PROMED" placeholder="{{estudiante.NOTFIN}}" />
-        </label>
-        <label class="item item-input item-stacked-label" ng-hide="!exFin">
-             <span class="input-label">Examen Final</span>
-             <input type="text" ng-model="estudiante.EXAFIN" placeholder="Examen Final" opcion="examenF" only-num/>
+        </div>
+        <div class="item item-divider">
+            <h2 class="subtitulo">PROMEDIO</h2>
+        </div>
+        <div class="item item-wrap">
+        <input type="text" ng-disabled="true" ng-model="estudiante.PROMED" placeholder="{{estudiante.NOTFIN}}" />
+        </div>
+        <!-- <div class="item item-divider" ng-hide="!exFin">!-->
+        <div class="item item-divider">
+             <h2 class="subtitulo">Examen Final</h2>
+        </div>
+        <div class="item item-wrap">
+          <input type="text" ng-model="estudiante.EXAFIN" placeholder="Examen Final" opcion="examenF" only-num/>
             <ng-mensaje mensaje="errorFM"></ng-mensaje>
             <ng-mensaje valor="!errorFV"></ng-mensaje>
-        </label>
-        <label class="item item-input item-stacked-label" ng-hide="!daInst">
-             <span class="input-label">2da Instancia</span>
-             <input type="text" ng-model="estudiante.da" placeholder="2da Instancia" opcion="daInstancia" only-num/>
+        </div>
+        <!--hemos eliminado para mostrarlo el ng-hide revisarlo con mas cuidado!-->
+        <div class="item item-divider" >
+             <h2 class="subtitulo">2da Instancia</h2>
+        </div>
+        <div class="item item-wrap">
+           <input type="text" ng-model="estudiante.da" placeholder="2da Instancia" opcion="daInstancia" only-num/>
             <ng-mensaje mensaje="errorDM"></ng-mensaje>
             <ng-mensaje valor="!errorDV"></ng-mensaje>
-        </label>
-        <label class="item item-input item-stacked-label">
-            <span class="input-label">Nota Final</span>
-            <input type="text" ng-disabled="true" ng-model="estudiante.NOTFIN" placeholder="{{estudiante.NOTFIN}}" />
-        </label>
-        <label class="item item-input item-stacked-label">
-            <span class="input-label">Nota Cont</span>
-            <input type="text" ng-disabled="true" ng-model="estudiante.NOTCON" placeholder="{{estudiante.NOTCON}}" />
-        </label>
-        <button class="button button-full button-positive" ng-click="closeModal(estudiante)" >
+        </div>
+        <div class="item item-divider">
+           <h2 class="subtitulo">Nota Final</h2>
+        </div>
+        <div class="item item-wrap">
+         <input type="text" ng-disabled="true" ng-model="estudiante.NOTFIN" placeholder="{{estudiante.NOTFIN}}" />
+        </div>
+        <div class="item item-divider">
+            <h2 class="subtitulo">Nota Cont</h2>
+        </div>
+        <div class="item item-wrap">
+         <input type="text" ng-disabled="true" ng-model="estudiante.NOTCON" placeholder="{{estudiante.NOTCON}}" />
+        </div>
+        <button class="button button-full button-positive" ng-click="closeModal(estudiante)">
             Guardar
         </button>
       <div>

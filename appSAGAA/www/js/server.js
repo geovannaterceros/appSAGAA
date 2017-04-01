@@ -88,6 +88,7 @@
         };
         //Deberia comparar con los datos del servidor del SAGAA, after send to
         //SAGAA
+        console.log(credentials);
         if(credentials.username == 'admin@gmail.com' && credentials.password =='admin'){
             
             var cred64 = Base64.encode(credentials);
@@ -112,8 +113,8 @@
         var token = null;
         //Datos auxiliares del SAGAA
         var listaG = {
-            gestion1 : "1-2016 PRIMER SEMESTRE",
-            gestion2 : "2-2016 SEGUNDO SEMESTRE"
+            gestion1 : "1-2017 PRIMER SEMESTRE",
+            gestion2 : "2-2017 SEGUNDO SEMESTRE"
         }
         console.log(req.headers);
           if(req.headers.authorization){
@@ -196,7 +197,7 @@
                 if(key == "Bearer"){
                     console.log("la clave:"+val);
                     console.log("comparamos el jwt si es correcto");
-                    return res.status(200).json({msg:"esta pidiendo al servidor, para descargar un file"});
+                    return res.status(200).json(fileSIS);
                 }else{
                    return res.status(500).json({msg:"no eres el correcto amigo, fuera de aqui"});
                 }

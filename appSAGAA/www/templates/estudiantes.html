@@ -1,31 +1,31 @@
-<ion-view >
-    <ion-nav-title>
-        Lista de Estudiantes
-    </ion-nav-title>
+<ion-view title="Lista de Estudiantes">
     <ion-nav-buttons side="right">
-        <button class="button button-icon icon ion-android-search" ng-click="desliza"></button>
         <button menu-toggle="right"class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
+   <!-- <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-android-search" ng-click="desliza"></button>
+        <button menu-toggle="right"class="button button-icon icon ion-navicon"></button>
+        </ion-nav-buttons>!-->
     <ion-content>
          <div class="item item-input-inset">
             <label class="item-input-wrapper">
                 <i class="icon ion-android-search placeholder-icon"></i>
-                <input type="text" placeholder="Buscar"  >
+                <input type="text" placeholder="Buscar">
             </label>
             <button class="button ion-close-circled input-button button-small" ng-click="borrar()" >
                 Borrar la busqueda
             </button>
         </div>
         <!--cuando aumento el filter no se muestra !-->
-      <ion-list ng-repeat="estudiante in listaN">
-        <ion-item>
+      <div class="card" ng-repeat="estudiante in listaN">
+        <div class="item item-dividir">
             <div class=item-avatar ng-click="openModal(estudiante)" >
-                <img src="../img/people.png">
+                <img src="img/people.png">
                 <h2 >{{estudiante.NOMBRE}}</h2>
                 <p>Nota Final:{{estudiante.NOTFIN}}</p>
                 <p>Estado:{{estudiante.NOTCON}}</p>
             </div>
-        </ion-item>
-      </ion-list>
+        </div>
+      </div>
     </ion-content>
 </ion-view>

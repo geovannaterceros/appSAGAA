@@ -1,12 +1,17 @@
-<ion-view view-title="Lista de Gestion">
-    <ion-content>
-      <ion-list>
-      <ion-item ng-click="gestion(gestiones.gestion1)">
-            {{gestiones.gestion1}}
-         </ion-item>
-         <ion-item ng-click="gestion(gestiones.gestion2)">
-            {{gestiones.gestion2}}
-          </ion-item>
-      </ion-list>
+<ion-view>
+    <ion-nav-title>
+        Lista de Gestion
+    </ion-nav-title>
+    <ion-content class="has-header">
+     <div class="list card">
+            <a class="item item-icon-left" href="javascript:void(0);" ng-click="gestion(gestiones.gestion1)">
+              <i class="icon ion-android-checkmark-circle"></i>
+                  {{gestiones.gestion1}}
+            </a>
+            <a class="item item-icon-left" href="javascript:void(0);" ng-click="gestion(gestiones.gestion2)">
+                  <i class="icon ion-android-checkmark-circle"></i>
+                    {{gestiones.gestion2}}
+            </a>
+     </div>
     </ion-content>
 </ion-view>

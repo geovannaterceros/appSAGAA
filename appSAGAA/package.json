@@ -39,7 +39,11 @@
       "id": "cordova-plugin-file-opener2"
     },
     "cordova-plugin-network-information",
-    "cordova-plugin-crosswalk-webview"
+    "cordova-plugin-crosswalk-webview",
+    {
+      "locator": "https://github.com/litehelpers/Cordova-sqlite-storage.git",
+      "id": "cordova-sqlite-storage"
+    }
   ],
   "cordovaPlatforms": [
     "android"

@@ -18,3 +18,21 @@
     font-size: 11px;
     color: #FF0000;
 }
+.scroll-content{
+     background: linear-gradient(
+                 rgba(0, 15, 200, 0.5),
+                 rgba(0, 15, 200, 0.5)
+                 ),
+                url(../img/inicio.jpg) ; 
+     background-size: 100% 100%;
+}
+.top{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+.subtitulo{
+    color: #0066FF;
+    font-weight:200;
+}
