@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Mon Feb 06 2017 10:18:31 GMT-0400 (BOT)
+// Generated on Tue May 23 2017 17:06:34 GMT-0400 (BOT)
 
 module.exports = function(config) {
   config.set({
@@ -15,6 +15,25 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+     '../www/lib/angular/angular.js',
+     '../www/lib/angular-mocks/angular-mocks.js',
+     '../www/js/controllers.js',
+     '../test/Controllers/controllers.spec.js',
+    // '../www/js/app.js',
+    // '../www/js/fileFactory.js',
+     //'../www/js/fileService.js'
+     //'../www/lib/angular-animate/angular-animate.js',
+    // '../www/lib/angular-sanitize/angular-sanitize.js',
+    // '../www/lib/angular-ui-router/release/angular-ui-router.js',
+    // '../www/js/*.js',
+    // '../www/lib/angular-animate/angular-animate.js',
+    // '../www/lib/angular-sanitize/angular-sanitize.js',
+    // '../www/lib/angular-mocks/angular-mocks.js',
+    //  'spec/**/*.js',
+    //  'spec/*.js',
+    //  '/Controller/*.js',
+    //  '/Controllers/*.spec.js'
+    //    '/*.js'
     ],
 
 
@@ -26,6 +45,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+    // 'test/**/*Test*': ['webpack']
     },
 
 
@@ -54,12 +74,12 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous

@@ -1,6 +1,12 @@
 <ion-view title="Lista de Carreras">
     <ion-content>
-        <div class="list card">
+        <div class="list card" ng-repeat="carrera in carreras" >
+            <a class="item item-icon-left" href="javascript:void(0);" ng-click="listaC(carrera)">
+                <i class="icon ion-android-checkmark-circle"></i>
+                {{carrera.carrera}}
+            </a>
+        </div>
+       <!-- <div class="list card">
           <a href="javascript:void(0);" class="item item-icon-left" ng-click="listaC(carreras.plan1)">
             <i class="ion-android-list"></i>
             {{carreras.plan1.plan}}
@@ -13,6 +19,6 @@
             <i class="ion-android-list"></i>
             {{carreras.plan3.plan}}
           </a>
-        </div>
+          </div>!-->
     </ion-content>
 </ion-view>

@@ -3,8 +3,10 @@ angular.module('starter.services', [])
  //Dividiendo el archivo Sis 
     return {
         divFile : function(data , template){
+            console.log(data);
             var aux;
             if(template == 'informacion'){
+               console.log((((((data.pcd).head)[0]).info))[0]);
                return (((((data.pcd).head)[0]).info))[0];
             }else{
                 if(template == 'materias'){
@@ -205,6 +207,17 @@ angular.module('starter.services', [])
         }
     }
 })
+.service('UsuarioDato', function(){
+    var idUsuario;
+    return {
+        setUsuario: function(u){
+            idUsuario = u;
+        },
+        getUsuario : function(){
+            return idUsuario;
+        }
+    }
+})
 .service('CarreraDato', function(){
     var carrera;
     return {
@@ -330,12 +343,12 @@ angular.module('starter.services', [])
 
     function initDB() {
         // Creates the database or opens if it already exists
-        _db = new PouchDB('sagaa', {adapter: 'websql'});
+        console.log('esta creando la bd');
+        _db = new PouchDB('sagaa', { adapter: 'websql' },  { skip_setup: true });
     };
 
     function addSagaa(sagaa) {  
-        console.log("This add");
-        return $q.when(_db.post(sagaa));
+        return $q.when( _db.post( sagaa));
     };
 
     function updateSagaa(sagaa) {  
@@ -349,6 +362,12 @@ angular.module('starter.services', [])
     };
 
    function getAllSagaas() {
+      /* _db.info()
+           .then(() => {
+            console.log( 'existe!!' );
+           }).catch(e => {
+            console.log( 'no hay!!' )
+           });*/
     if (!_sagaas) {
        return $q.when(_db.allDocs({ include_docs: true}))
             .then(function(docs) {
@@ -367,6 +386,7 @@ angular.module('starter.services', [])
             });
     } else {
         // Return cached data as a promise
+        console.log(typeof(_sagaas));
         return $q.when(_sagaas);
     }
   };

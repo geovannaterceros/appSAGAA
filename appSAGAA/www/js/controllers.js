@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService) {
- $ionicPlatform.ready(function() {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService, ListaEstServ) {
+     $ionicPlatform.ready(function() {
     SagaaService.initDB();
  });
 
@@ -48,9 +48,12 @@ angular.module('starter.controllers', [])
   $scope.guardarLE = function(){
     console.log("ya podemos guardar");
 
-    var data = GuardarData.getDataSis();
-  
-    sisFactory.postDataSis(data)
+    var grupo  = ListaEstServ.getcodP();
+    var listaE = GuardarData.getDataSis();
+    var data = [];
+    data.push(grupo);
+    data.push(listaE);
+    sisFactory.postDataSis( data )
     .then(function(result){
         console.log("Ha sido guardado en el servidor, sin problemas");
     }).catch(function(){
@@ -106,22 +109,13 @@ angular.module('starter.controllers', [])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
-.controller('InicioCtrl', function($scope, $ionicLoading, $location, $ionicModal, $ionicPopover, $ionicPopup, $timeout ,ConnectivityMonitor, sisFactory, SagaaService){
+.controller('InicioCtrl', function($scope, $location, $timeout ,ConnectivityMonitor, sisFactory, SagaaService){
    $scope.login = function(user) {
 
+       //verifica los datos de entrada
         if(typeof(user)=='undefined'|| typeof(user.username)=='undefined'|| typeof(user.password)=='undefined'){
             $scope.showAlert('Debe ingresar usuario y password.');
          }else{
-          /*   
-		//verificate networking
-          //      duration: 3000
-           });
-           setTimeout(function(){
-             $ionicLoading.hide().then(function(){
-                   console.log(ConnectivityMonitor.isOnline());
-                 });
-           }, 3000);
-            */
              //no existe wifi disponible
             if(ConnectivityMonitor.isOnline()){
                 console.log(ConnectivityMonitor.isOnline());
@@ -136,20 +130,21 @@ angular.module('starter.controllers', [])
                     });
             }else{
                 //usamos en modo offline sin comunicacion externa
-                alert('Se esta utilizando en modo offline sin wifi y sin conneccion de datos');
+                alert('Se esta utilizando en modo offline sin wifi y sin conneccion de datos, verificando si tiene session guardada');
 
                 if(window.localStorage.getItem('id_token')){
                     alert('Se esta utilizando en modo offline, ha recuperado su session anterior de los datos del celular');
                     console.log(window.localStorage.getItem('id_token'));
                     $location.path("app/gestion");
                 }else{
-                    alert('Se esta utilizando en modo offline y no ha creado anteriormente su session para guardar en el celular.');
+                    alert('No se puede utilizar en modo offline porque no ha creado anteriormente su cuenta.');
                  //    $scope.showAlert("No hay conneccion a internet");
                      console.log(ConnectivityMonitor.isOnline());
                      $location.path('/app/inicio');
-                }
+                    }
                 }
         }
+        return true;
   };
   //----------------Falta hacer el logout----------------------------
   $scope.logout = function() {
@@ -164,50 +159,75 @@ angular.module('starter.controllers', [])
    });
  };
 })
-.controller('GestionCtrl', function($scope, $timeout, sisFactory, $location, GestionDato, $state, $ionicPlatform , SagaaService, ObjetoService){
+.controller('GestionCtrl', function($scope, $timeout, sisFactory, $location, GestionDato, UsuarioDato, $state, $ionicPlatform , $ionicLoading, SagaaService, ObjetoService){
     
     $ionicPlatform.ready(function() {
         SagaaService.initDB();
     });
 
-    sisFactory.posDataGestion().then(function(result){
-        console.log(result);
-        $timeout(function(){
-            SagaaService.getAllSagaas().then(function(sagaas){
-                actualizar(sagaas, result); 
+    setTimeout( function() {
+        sisFactory.posDataGestion()
+            .then( function( result ) {
+                console.log( result );
+                console.log( 'idUsuario:' + result[0].idUsuario );
+                UsuarioDato.setUsuario( result[0].idUsuario );
+                $timeout( function(){
+                    SagaaService.getAllSagaas()
+                        .then( function( sagaas ){
+                            actualizar( sagaas, result ); 
+                        });
+                });
+        }).catch( function ( result ) {
+            $timeout( function() {
+                SagaaService.getAllSagaas()
+                    .then( function( sagaas ) {
+                        offGestion( sagaas );
+                    });
             });
+          //  console.log("tenemos error");
         });
-    }).catch(function(result){
-        $timeout(function(){
-            SagaaService.getAllSagaas().then(function(sagaas){
-                offGestion(sagaas); 
-            });
-        });
-       console.log("tenemos error");
     });
-        
-    function actualizar(sagaa, dato){
-        console.log(sagaa.length)
+    function actualizar( sagaa, dato ){
+        var json = {};
+            for( var i = 0; i < dato.length; i++ ){
+                json [i] = dato[i];
+            }
         if(sagaa.length != 0){
-            SagaaService.updateSagaa(dato);
+            SagaaService.updateSagaa(json);
+            dato.shift();
             $scope.gestiones = dato;
         }else{
-            SagaaService.addSagaa(dato);
+            SagaaService.addSagaa( json );
+            dato.shift();
             $scope.gestiones = dato;
         }
     };
     
     function offGestion(sagaa){
         for(var i = 0; i<sagaa.length; i++){
-            if( sagaa[i].gestion1){
-               console.log(sagaa[i])
-               $scope.gestiones = sagaa[i];
+            var aux = sagaa[i];
+            console.log("tam aux:" + Object.keys(aux).length);
+            if(!aux.hasOwnProperty("pcd")){
+            for(var j = 0; j < Object.keys(aux).length; j++){
+               if ('name' in aux[j]){
+                   var gestion = aux;
+                    delete gestion[0];
+                    delete gestion._id;
+                    delete gestion._rev;
+                    console.log(gestion);
+                   $scope.gestiones = gestion ;
+                   j = Object.keys(aux);
+                   //debe terminar el ciclo
+               }else{
+                    i = sagaa.length;
+               }
+            }
             }
         }
     }
-    $scope.gestion = function (g){
+    $scope.gestionSelec = function (g){
         GestionDato.setGestion(g);
-        console.log(g);
+        console.log( "la gestion elegida:" + g );
         //window.localStorage.setItem('id_request');
         $location.path("/app/seleccionar");
     }
@@ -215,11 +235,17 @@ angular.module('starter.controllers', [])
     //del navegador
     //$state.go($state.current, {}, {reload: true});
 })
-.controller('SeleccionarCtrl', function($scope ,$location ,$state , $timeout, $ionicPlatform,GestionDato, CarreraDato,sisFactory, SagaaService){
+.controller('SeleccionarCtrl', function($scope ,$location ,$state , $timeout, $ionicPlatform, GestionDato, UsuarioDato, CarreraDato,sisFactory, SagaaService){
     
     console.log(GestionDato.getGestion());
+    console.log(UsuarioDato.getUsuario());
+    
+    var dato = {
+                idGestion : GestionDato.getGestion(),
+                idUsuario : UsuarioDato.getUsuario()
+    }
 
-    sisFactory.posDataCarrera(GestionDato.getGestion()).then(function(result){
+    sisFactory.posDataCarrera(dato).then(function(result){
         console.log(result);
         $timeout(function(){
             SagaaService.getAllSagaas().then(function(sagaas){
@@ -229,6 +255,7 @@ angular.module('starter.controllers', [])
     }).catch(function(result){
         $timeout(function(){
             SagaaService.getAllSagaas().then(function(sagaas){
+                console.log(sagaas);
                 offSeleccionar(sagaas);
             });
         });
@@ -236,22 +263,39 @@ angular.module('starter.controllers', [])
     });
 
     function actualizar(sagaa, dato){
-        console.log(sagaa.length)
+        var json = {};
+            //for para poner en objeto
+            for( var i = 0; i < dato.length; i++ ){
+                json [i] = dato[i];
+            }
         if(sagaa.length != 1){
-            SagaaService.updateSagaa(dato);
+            SagaaService.updateSagaa(json);
             //carreras q esta guardando creo q nada
-            $scope.carreras = dato;
+            $scope.carreras = json;
         }else{
-            console.log(dato);
-            SagaaService.addSagaa(dato);
-            $scope.carreras = dato;
+            SagaaService.addSagaa(json);
+            $scope.carreras = json;
         }
     };
     function offSeleccionar(sagaa){
         for(var i = 0; i<sagaa.length; i++){
-            if( sagaa[i].plan1){
-                console.log(sagaa[i]);
-                $scope.carreras = sagaa[i];
+            var aux = sagaa[i];
+            if(!aux.hasOwnProperty("pcd")){
+            for(var j = 0; j < Object.keys(aux).length; j++){
+                if( aux[j] != undefined){
+                 if(!aux[j].hasOwnProperty('name')){
+                    if ('carrera' in aux[j]){
+                        var carrera = aux;
+                        delete carrera._id;
+                        delete carrera._rev;
+                       $scope.carreras = carrera;
+                       j = Object.keys(aux).length;
+                    }
+                 }else{
+                    j = Object.keys(aux).length;
+                 }
+               }
+            }
             }
         }
     };
@@ -275,36 +319,36 @@ angular.module('starter.controllers', [])
         //descarga el archivo al websql en el cell how json 
         sisFactory.posDataDetalle(carrera).then(function(result){
            $timeout(function(){
-                    SagaaService.getAllSagaas().then(function(sagaas){
-                    actualizar(sagaas, result); 
+                SagaaService.getAllSagaas().then(function(sagaas){
+                    $timeout(function(){
+                        actualizar(sagaas, result); 
+                    });
                 });
             });
+            $location.path("/app/informacion");
         }).catch(function(result){
             $timeout(function(){
                 SagaaService.getAllSagaas().then(function(sagaas){
-                offDetalle(sagaas); 
+                    $timeout(function(){
+                        offDetalle(sagaas); 
+                    });
                 });
             });
+            $location.path("/app/informacion");
         });
-        $location.path("/app/informacion");
-    }
+        }
     function actualizar(sagaa, dato){
-        console.log(sagaa.length)
-        console.log(dato);
             //debo change los datos de sagaa length
         if(sagaa.length != 2){
             SagaaService.updateSagaa(dato);
             //dudasss q muestra carreras
-            console.log(dato);
         }else{
             SagaaService.addSagaa(dato);
-            console.log(dato);
         }
     };
     function offDetalle(sagaa){
         for(var i = 0; i<sagaa.length; i++){
             if( sagaa[i].pcd){
-                console.log(sagaa[i]);
                 //SagaaService.deleteSagaa(sagaa[i+1]);
                $scope.detalle = sagaa[i]
             }
@@ -314,7 +358,7 @@ angular.module('starter.controllers', [])
 //Obtener la Informacion Docente, Carrera, Facultad
 .controller('InformacionCtrl', function($scope, $ionicPlatform, $timeout, SagaaService, sisFactory, CrearBDServ ) {
     console.log("factory");
-    var data = {};
+   // var data = {};
 /*    sisFactory.getDataSis().then(function(result){
         data = result;
         var info = CrearBDServ.divFile(data, 'informacion');
@@ -329,18 +373,22 @@ angular.module('starter.controllers', [])
     });
     $timeout(function(){
         SagaaService.getAllSagaas().then(function(sagaas){
-            buscarData(sagaas);
-            var info = CrearBDServ.divFile(data, 'informacion');
-            var infoA = CrearBDServ.sepDatos(info);
-            var infoD = CrearBDServ.crearBDInf(infoA);
-             $scope.datos = infoD;
+            $timeout( function(){
+                buscarData(sagaas);
+           }, 3000);
         });
     });
-    function buscarData(sagaa){
-        for(var i = 0; i< sagaa.length; i++){
-            if(sagaa[i].pcd){
-                console.log(sagaa[i]);
-                data = sagaa[i];
+    function buscarData(sagaas){
+        var names = sagaas.map(function(elemento) {
+            console.log(elemento);
+            return elemento;
+        });
+        for(var i = 0; i < sagaas.length; i++){
+            if(sagaas[i].pcd){
+                var info = CrearBDServ.divFile(sagaas[i], 'informacion');
+                var infoA = CrearBDServ.sepDatos(info);
+                var infoD = CrearBDServ.crearBDInf(infoA);
+                $scope.datos = infoD;
             }
         }
     }
@@ -670,4 +718,9 @@ angular.module('starter.controllers', [])
       }, function(err) {
       console.log("no encontro el file");
      });
+})
+.controller('AccountCtrl', function($scope) {
+    $scope.settings = {
+        enableFriends: true
+    };
 });
