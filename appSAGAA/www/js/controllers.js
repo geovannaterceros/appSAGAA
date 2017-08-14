@@ -1,8 +1,8 @@
 angular.module('starter.controllers', [])
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService, ListaEstServ) {
-     $ionicPlatform.ready(function() {
-    SagaaService.initDB();
- });
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService, ListaEstServ, $ionicPopover) {
+    $ionicPlatform.ready(function() {
+        SagaaService.initDB();
+    });
 
   $scope.loginData = {};
 
@@ -93,7 +93,86 @@ angular.module('starter.controllers', [])
       }
     console.log($ionicHistory.currentStateName());
     console.log("volver atras");
+//Ionic Material Design
 
+    $scope.isExpanded = false;
+    $scope.hasHeaderFabLeft = false;
+    $scope.hasHeaderFabRight = false;
+
+    var navIcons = document.getElementsByClassName('ion-navicon');
+    for (var i = 0; i < navIcons.length; i++) {
+        navIcons.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    }
+    ////////////////////////////////////////
+    // Layout Methods
+    ////////////////////////////////////////
+
+    $scope.hideNavBar = function() {
+        document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
+    };
+
+    $scope.showNavBar = function() {
+        document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
+    };
+
+    $scope.noHeader = function() {
+        var content = document.getElementsByTagName('ion-content');
+        for (var i = 0; i < content.length; i++) {
+            if (content[i].classList.contains('has-header')) {
+                content[i].classList.toggle('has-header');
+            }
+        }
+    };
+
+    $scope.setExpanded = function(bool) {
+        $scope.isExpanded = bool;
+    };
+
+    $scope.setHeaderFab = function(location) {
+        var hasHeaderFabLeft = false;
+        var hasHeaderFabRight = false;
+
+        switch (location) {
+            case 'left':
+                hasHeaderFabLeft = true;
+                break;
+            case 'right':
+                hasHeaderFabRight = true;
+                break;
+        }
+
+        $scope.hasHeaderFabLeft = hasHeaderFabLeft;
+        $scope.hasHeaderFabRight = hasHeaderFabRight;
+    };
+
+    $scope.hasHeader = function() {
+        var content = document.getElementsByTagName('ion-content');
+        for (var i = 0; i < content.length; i++) {
+            if (!content[i].classList.contains('has-header')) {
+                content[i].classList.toggle('has-header');
+            }
+        }
+
+    };
+
+    $scope.hideHeader = function() {
+        $scope.hideNavBar();
+        $scope.noHeader();
+    };
+
+    $scope.showHeader = function() {
+        $scope.showNavBar();
+        $scope.hasHeader();
+    };
+
+    $scope.clearFabs = function() {
+        var fabs = document.getElementsByClassName('button-fab');
+        if (fabs.length && fabs.length > 1) {
+            fabs[0].remove();
+        }
+    };
 })
 
 .controller('PlaylistsCtrl', function($scope, $ionicModal, $ionicPlatform ) {
@@ -109,8 +188,53 @@ angular.module('starter.controllers', [])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
-.controller('InicioCtrl', function($scope, $location, $timeout ,ConnectivityMonitor, sisFactory, SagaaService){
-   $scope.login = function(user) {
+.controller('InicioCtrl', function($scope, $location, $timeout, $ionicPopup, ConnectivityMonitor, sisFactory, SagaaService, $stateParams, ionicMaterialInk){
+//Beging ionic material design
+
+    $scope.$parent.clearFabs();
+    $timeout(function() {
+        $scope.$parent.hideHeader();
+    }, 0);
+    ionicMaterialInk.displayEffect();
+//Then ionic material design
+
+    $scope.user = {};
+    $scope.login = function () {
+        console.log($scope.user);
+       //verifica los datos de entrada
+        if(typeof($scope.user)=='undefined'|| typeof($scope.user.username)=='undefined'|| typeof($scope.user.password)=='undefined'){
+            $scope.showAlert('Debe ingresar usuario y password.');
+         }else{
+             //no existe wifi disponible
+            if(ConnectivityMonitor.isOnline()){
+                console.log(ConnectivityMonitor.isOnline());
+                //connectarme a mi servidor auxiliar
+                //This petion, interceptor in service
+                //cuando hacemos peticiones al servidor
+                sisFactory.posDataUsuario($scope.user).then(function(result){
+                    console.log("response of DataUsuario");
+                }).catch(function(result){
+                    //   $scope.showAlert("Error en la contrasenha o login, vuelva a intentarlo");
+                    console.log(result);
+                    });
+            }else{
+                //usamos en modo offline sin comunicacion externa
+                alert('Se esta utilizando en modo offline sin wifi y sin conneccion de datos, verificando si tiene session guardada');
+
+                if(window.localStorage.getItem('id_token')){
+                    alert('Se esta utilizando en modo offline, ha recuperado su session anterior de los datos del celular');
+                    console.log(window.localStorage.getItem('id_token'));
+                    $location.path("app/gestion");
+                }else{
+                    alert('No se puede utilizar en modo offline porque no ha creado anteriormente su cuenta.');
+                 //    $scope.showAlert("No hay conneccion a internet");
+                     console.log(ConnectivityMonitor.isOnline());
+                     $location.path('/app/inicio');
+                    }
+                }
+        }
+    };
+  /* $scope.login = function(user) {
 
        //verifica los datos de entrada
         if(typeof(user)=='undefined'|| typeof(user.username)=='undefined'|| typeof(user.password)=='undefined'){
@@ -144,9 +268,9 @@ angular.module('starter.controllers', [])
                     }
                 }
         }
-        return true;
-  };
+  };*/
   //----------------Falta hacer el logout----------------------------
+
   $scope.logout = function() {
       $location.path('/app/inicio');
   };
@@ -158,6 +282,9 @@ angular.module('starter.controllers', [])
 	 template: msg
    });
  };
+    $scope.settings = {
+        enableFriends: true
+    };
 })
 .controller('GestionCtrl', function($scope, $timeout, sisFactory, $location, GestionDato, UsuarioDato, $state, $ionicPlatform , $ionicLoading, SagaaService, ObjetoService){
     

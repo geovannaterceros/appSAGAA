@@ -17,7 +17,7 @@ module.exports = function(config) {
     files: [
      '../www/lib/angular/angular.js',
      '../www/lib/angular-mocks/angular-mocks.js',
-     '../www/js/controllers.js',
+     '../www/js/controller.js',
      '../test/Controllers/controllers.spec.js',
     // '../www/js/app.js',
     // '../www/js/fileFactory.js',
@@ -26,9 +26,6 @@ module.exports = function(config) {
     // '../www/lib/angular-sanitize/angular-sanitize.js',
     // '../www/lib/angular-ui-router/release/angular-ui-router.js',
     // '../www/js/*.js',
-    // '../www/lib/angular-animate/angular-animate.js',
-    // '../www/lib/angular-sanitize/angular-sanitize.js',
-    // '../www/lib/angular-mocks/angular-mocks.js',
     //  'spec/**/*.js',
     //  'spec/*.js',
     //  '/Controller/*.js',

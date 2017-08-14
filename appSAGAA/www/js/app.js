@@ -112,7 +112,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
        //whiteListedDomains: ['167.157.28.244'],
        //whiteListedDomains: ['localhost', '192.168.0.105'],
        //whiteListedDomains: ['localhost', '192.168.43.226'],
-       whiteListedDomains: ['localhost', '172.20.10.3'],
+       //whiteListedDomains: ['localhost', '172.20.10.3'],
+       whiteListedDomains: ['localhost', '10.0.125.149'],
        tokenGetter: function(options, jwtHelper){
          var token = localStorage.getItem('id_token');
           return token;

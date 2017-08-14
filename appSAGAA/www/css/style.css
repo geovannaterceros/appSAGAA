@@ -18,14 +18,14 @@
     font-size: 11px;
     color: #FF0000;
 }
-.scroll-content{
+/*.scroll-content{
      background: linear-gradient(
                  rgba(0, 15, 200, 0.5),
                  rgba(0, 15, 200, 0.5)
                  ),
                 url(../img/inicio.jpg) ; 
      background-size: 100% 100%;
-}
+}*/
 .top{
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
@@ -35,4 +35,59 @@
 .subtitulo{
     color: #0066FF;
     font-weight:200;
+}
+/* Login
+ * ==================================*/
+.app-icon {
+    background-color: #fff;
+    background: url('../img/docente.jpg') center;
+    background-size: cover;
+    border-radius: 50%;
+    height: 125px;
+    margin: 0 auto;
+    width: 125px;
+}
+.scroll {
+        height: 100%;
+}
+/* ======nav-bar*/
+.bar.bar-custom {
+    border-color: #f40428;
+    background-color: #042b6e;
+    background-image: linear-gradient(0deg, #f40428, #f40428 50%, transparent 50%);
+    color: #fff; 
+/*    height:70px;*/
+}
+.menuD{
+    background-color:#042b6e;
+}
+.menuDC .item {
+    background-color: transparent;
+    border:none;   /*Removes all borders*/
+    border-top: 1px solid;   /*Top Border for each menu item*/
+    border-bottom:2px solid;   /*Bottom border for each menu item*/
+    border-color: #666;   /*Sets colors for top and bottom border*/
+    color: white;    /*Text color for each item*/
+}
+             
+            /*Changes the border for the last item*/
+.menuDC .item:last-child {
+    border-bottom: 1px solid #666;
+}
+               
+.menuDC .item-complex .item-content, .dark .item-radio .item-content {
+    background-color: transparent;
+}
+ /*Just makes the type white*/
+.menuD h2 {
+    bottom: 0;
+    font-size: 18px;
+    left: 16px;
+    position: absolute;
+    color: white;
+}
+.menuDC h3,
+.menuDC p,
+.menuDC a {
+    color: white;  /*Text color for each item, overrides the color property above*/
 }

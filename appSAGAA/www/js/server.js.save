@@ -165,7 +165,7 @@
                             'claveUsuario' : req.body.password,
                             'botonFormulario' : 'Ingresar'
                 };
-        
+																																																																																																																																																																																		        
             data = querystring.stringify(data);
              
             curl.setOpt( Curl.option.URL, url );
@@ -470,7 +470,6 @@
     }
     //Filtra los datos de Detalle    
     function filtroDetalle(dato){
-        console.log(dato);
         var re = /\r\n|\r\r|\n\r|\n|\r/g;
         var espacio  = dato.replace(re , '');
         var cadenaD = [];

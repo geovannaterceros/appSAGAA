@@ -1,21 +1,22 @@
 <ion-view view-title="Iniciar Session" hide-nav-bar="true" >
-  <ion-content class="padding">
+<ion-content style="background: url(img/inicio.png) center; background-size: cover;">
+<!--<ion-content class="padding">-->
   <div class="hero no-header flat">
+      <div class="content">
       <div class="app-icon"></div>
-      <div class="app-icon"></div>
-        <h1 class="top">Sesion Docente</h1>
-        </br></br>
-        <div ><img src="img/docente.jpg" style="border-radius: 100%;"></div>
-        <div class="list">
-
-            <ion-md-input placeholder="Username" highlight-color="balanced" type="text" ng-model="user.username"></ion-md-input>
-            <ion-md-input placeholder="Password" highlight-color="energized" type="password" ng-model="user.password"></ion-md-input>
+        <h1 class="top">Docente</h1>
+      </div>
+  </div>
+      <!-- </br></br>
+          <div ><img src="img/docente.jpg" style="border-radius: 100%;"></div>-->
+  <div class="list">
+      <ion-md-input placeholder="Username" highlight-color="balanced" type="text" ng-model="user.username"></ion-md-input>
+      <ion-md-input placeholder="Password" highlight-color="energized" type="password" ng-model="user.password"></ion-md-input>
 <!--            <label class="item item-input"><input type="text" ng-model="user.username" placeholder="Usuario" > </label>
     <label class="item item-input"><input type="password" ng-model="user.password" placeholder="Contrasenha" > </label>!-->
-        </div>
-        <div class="padding">
-            <button class="button button-full button-positive" ng-click="login(user)">Aceptar</button>
-        </div>
-    </div>
+  </div>
+  <div class="padding">
+     <button class="button button-full button-positive" ng-click="login()">Aceptar</button>
+  </div>
   </ion-content>
 </ion-view>

@@ -1,9 +1,10 @@
 angular.module('starter.factorys',[])
 .factory('sisFactory', function($http, $q, $location, $localStorage, logHttp) {
-      var urlBase = 'http://172.20.10.3:8080';
+  //    var urlBase = 'http://172.20.10.3:8080';
   //  var urlBase = 'http://192.168.43.226:8080';
   //  var urlBase = 'http://167.157.28.244:8080';
   //  var urlBase = 'http://192.168.0.105:8080';
+    var urlBase = 'http://10.0.125.149:8080';
     var sisFactory = {};
     var dato = {};
     var config = {
