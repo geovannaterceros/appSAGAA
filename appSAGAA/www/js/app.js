@@ -11,8 +11,14 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+    StatusBar.styleDefault();
     }
+/*    $rootScope.$on('loading:show', function() {
+        $ionicLoading.show({template: 'Loading...'})
+    });
+    $rootScope.$on('loading:hide', function() {
+        $ionicLoading.hide()
+    });*/
   });
 })
 
@@ -33,7 +39,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
              templateUrl: 'templates/inicio.html',
              controller: 'InicioCtrl'
             }
-      }
+     },
+     cache: false
   })
   .state('app.gestion', {
     url : '/gestion',
@@ -42,7 +49,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
             templateUrl: 'templates/gestion.html',
             controller: 'GestionCtrl'
             }
-     }
+     },
+     cache: false
   })
   .state('app.seleccionar', {
     url : '/seleccionar',
@@ -73,7 +81,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
         'menuListaIzquierda' : {
              templateUrl : 'templates/menuIzquierdo.html'
         }
-      }
+      },
+    cache: false
   })
   .state('app.materias', {
     url: '/materias',
@@ -85,7 +94,8 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
         'menuListaIzquierda' : {
             templateUrl : 'templates/menuIzquierdo.html'
         }
-      }
+      },
+    cache: false
   })
   .state('app.estudiantes', {
     url: '/estudiantes',
@@ -110,12 +120,15 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
 
   jwtOptionsProvider.config({
        //whiteListedDomains: ['167.157.28.244'],
-       //whiteListedDomains: ['localhost', '192.168.0.105'],
+       // whiteListedDomains: ['localhost', '192.168.0.103'],
+       //whiteListedDomains: ['localhost', '192.168.1.109'],
        //whiteListedDomains: ['localhost', '192.168.43.226'],
        //whiteListedDomains: ['localhost', '172.20.10.3'],
-       whiteListedDomains: ['localhost', '10.0.125.149'],
+       //whiteListedDomains: ['localhost', '10.0.125.149'],
+       whiteListedDomains: ['localhost', '192.168.43.209'],
        tokenGetter: function(options, jwtHelper){
          var token = localStorage.getItem('id_token');
+         console.log(token);
           return token;
        }
   });
@@ -137,6 +150,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
   };
  $httpProvider.interceptors.push('jwtInterceptor');
  $httpProvider.interceptors.push('myInterceptor');
+ $httpProvider.interceptors.push('loadingInterceptor');
  // $httpProvider.Interceptors.push("jwtInterctor");
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('app/inicio');

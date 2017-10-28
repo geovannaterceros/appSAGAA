@@ -4,7 +4,9 @@ angular.module('starter.factorys',[])
   //  var urlBase = 'http://192.168.43.226:8080';
   //  var urlBase = 'http://167.157.28.244:8080';
   //  var urlBase = 'http://192.168.0.105:8080';
-    var urlBase = 'http://10.0.125.149:8080';
+    //var urlBase = 'http://10.0.125.149:8080';
+    //var urlBase = 'http://192.168.0.103:8080';
+    var urlBase = 'http://192.168.43.209:8080';
     var sisFactory = {};
     var dato = {};
     var config = {
@@ -60,30 +62,27 @@ angular.module('starter.factorys',[])
 
          $http.post(urlBase+'/datosU', usuarioJ,{skipAuthorization:true})
          .success(function(data) {
-            console.log("respuesta debe ser el token");
-            console.log(data);
+             console.log(data);
              //primera vez q entra con esta cuenta guarda los datos en el token
-              if(!window.localStorage.getItem('id_token')){
-                  console.log("recien creamos al token");
-                  window.localStorage.setItem('id_token', data);
-              }else{
-                  console.log("ya ha sido creado");
-                  console.log(window.localStorage.getItem('id_token'));
-              }
-              defered.resolve(data);
-              $location.path("app/gestion");
+             //verificar los datos
+            if(data){//verifica si entraga datos erroneos
+                console.log("guarda los datos");
+                if(!window.localStorage.getItem('id_token')){
+                    window.localStorage.setItem('username', datos.username);
+                    window.localStorage.setItem('password', datos.password);
+                    window.localStorage.setItem('id_token', data);
+                      defered.resolve(data);
+                      $location.path("app/gestion");
+                }
+                   defered.resolve(data);
+                   $location.path("app/gestion");
+            }else{
+                alert("Los datos son erroneos" +  data.msg);
+             }
           })
             // verificamos q exista la cookies
             // antes haiga realizado, su session
           .error(function(err){
-                alert('Se esta utilizando en modo offline servidor no disponible');
-            if(window.localStorage.getItem('id_token')){
-                alert('Se esta utilizando en modo offline, ha recuperado su session anterior de los datos del celular');
-             console.log(window.localStorage.getItem('id_token'));
-             $location.path("app/gestion");
-            }else{
-                alert('Se esta utilizando en modo offline y no ha creado anteriormente su session para guardar en el celular.');
-            }
              console.log(err);
              defered.reject(err);
           });
@@ -109,7 +108,6 @@ angular.module('starter.factorys',[])
          return promise; 
     };
     sisFactory.posDataCarrera = function(g){
-        console.log(g);
         var dato = {gestion: g}
         var gestionD = JSON.stringify(dato);
         var defered = $q.defer();
@@ -152,5 +150,57 @@ angular.module('starter.factorys',[])
          return promise; 
     };
    return sisFactory;
-});
+})
+.factory('loadingInterceptor',  function($timeout, $injector, $q ) {
 
+    var requestInitiated;
+
+    function showLoadingText(){
+        $injector.get("$ionicLoading").show({
+            template : 'Cargando...',
+            animation : 'fade-in',
+            showBackdrop : true
+        });
+    };
+
+    function hideLoadingText(){
+        $injector.get("$ionicLoading").hide();
+    };
+
+    return {
+        
+        request: function(config){
+          if(config.url.endsWith('.html')) {
+            console.log("Peticion html");
+          }else{
+             requestInitiated = true;
+             showLoadingText();
+             console.log('La peticion inicializa con Interceptor');
+          }
+          return config;
+        },
+        
+        response : function(response){
+            requestInitiated = false;
+            $timeout(function(){
+                if(requestInitiated) return;
+                hideLoadingText();
+                console.log('Respuesta con Interceptor');
+            }, 300);
+            return response;
+        },
+        
+        requestError : function (err){
+            hideLoadingText();
+            console.log('Request error via Interceptor');
+            return err;
+        },
+        
+        responseError : function (err){
+            hideLoadingText();
+            console.log('ErrorRespuesta via Interceptor');
+            console.log("q.reject" + $q.reject(err));
+            return $q.reject(err);
+        }
+    }
+});

@@ -9,15 +9,17 @@ angular.module('starter.services', [])
                console.log((((((data.pcd).head)[0]).info))[0]);
                return (((((data.pcd).head)[0]).info))[0];
             }else{
-                if(template == 'materias'){
+                if(template == 'materias'){  
+                    console.log((((((data.pcd).head)[0]).group)[0]).normal);
                     return (((((data.pcd).head)[0]).group)[0]).normal;
                 }else{
                     //fin head
                     if(template == 'mesas'){
+                        console.log((((((data.pcd).head)[0]).group)[0]).me);
                         return (((((data.pcd).head)[0]).group)[0]).me;
                     }else{
                     //body 
-                                
+                                console.log(((((data.pcd).body)[0]).gradelist)[0]);
                                 var obj = ((((data.pcd).body)[0]).gradelist)[0];
                                 obj["_"] = null; 
                                 delete obj._;
@@ -59,6 +61,7 @@ angular.module('starter.services', [])
         },
 
         crearBDGrupo: function(array){
+            console.log(array);
             return newBD = {
                 'codP' : array[0],
                 'codMat' : array[1],
@@ -229,6 +232,17 @@ angular.module('starter.services', [])
         }
     }
 })
+.service('CarreraDato', function(){
+    var carrera;
+    return {
+        setCarrera: function(c){
+            carrera = c;
+        },
+        getCarrera : function(){
+            return carrera;
+        }
+    }
+})
 /*.factory('sisFactory', function($http) {
     var urlBase = 'http://localhost:3000';
     //var sisFactory = {};
@@ -290,7 +304,7 @@ angular.module('starter.services', [])
             }
             if(rejection.status === -1){
                 console.log("error de -1");
-             alert('Existe algun error en la respuesta');
+       //      alert('Existe algun error en la respuesta');
                 window.localStorage.setItem('id_request', data);
                 //window.location.reload();
                 //  $state.reload();
@@ -328,7 +342,7 @@ angular.module('starter.services', [])
     }
 })
 .service('SagaaService', function($q) {
-     var _db;    
+    var _db;    
     var _sagaas;
 
     return {
@@ -337,23 +351,47 @@ angular.module('starter.services', [])
         getAllSagaas: getAllSagaas,
         addSagaa: addSagaa,
         updateSagaa: updateSagaa,
-        //deleteSagaa: deleteSagaa,
+        updateSagaaPCD: updateSagaaPCD,
+        deleteSagaa: deleteSagaa,
         
     };
 
     function initDB() {
         // Creates the database or opens if it already exists
-        console.log('esta creando la bd');
         _db = new PouchDB('sagaa', { adapter: 'websql' },  { skip_setup: true });
     };
 
     function addSagaa(sagaa) {  
-        return $q.when( _db.post( sagaa));
+        console.log("this create");
+        console.log(sagaa);
+        
+        return $q.when( _db.post(sagaa));
     };
 
-    function updateSagaa(sagaa) {  
+    function updateSagaa(sagaa) {
+        console.log("this is data");
+         return $q.when(_db.put(sagaa));
+    }
+    function updateSagaaPCD(nuevo, actual) {
         console.log("this update");
-        return $q.when(_db.put(sagaa));
+        console.log("Datos a ser modificadoss");
+        console.log(actual);
+        console.log(nuevo);
+        console.log('Datos id');
+        console.log(actual._id);
+        console.log(actual._rev);
+       // actual.changes({ live: true, since: 'now', include_docs: true})
+       // .on('change', onDatabaseChange);
+ //        actual[index] = nuevo.doc; // update
+      return $q.when(_db.put(sagaa));
+        
+     /*  return $q.when(_db.allDocs({ include_docs: true}))
+            .then(function(docs) {
+                _sagaas = docs.(function(row) {
+                    return row.doc;
+                });
+                    console.log(_sagaas);
+            });*/
     };
 
     function deleteSagaa(sagaa) {

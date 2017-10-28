@@ -1,6 +1,7 @@
 <ion-view title="Lista de Carreras">
     <ion-content>
         <div class="list card" ng-repeat="carrera in carreras" >
+            {{error}}
             <a class="item item-icon-left" href="javascript:void(0);" ng-click="listaC(carrera)">
                 <i class="icon ion-android-checkmark-circle"></i>
                 {{carrera.carrera}}

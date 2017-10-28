@@ -178,16 +178,24 @@
             curl.setOpt( Curl.option.VERBOSE, true );
         
             curl.on('end', function( statusCode, body, headers ) {
-        
-                if( statusCode == 200 ) {
+
+                console.info("inicio error:" + statusCode);
+                //console.info("body ini:");
+               // console.info(body);
+                //console.info("body fin");
+                console.info("ini headers");
+                console.info(headers[0].location);
+                console.info("fin de headers");
+                if( statusCode == 200 &&  headers[0].location == "http://pruebas.fcyt.umss.edu.bo/sagaa/usuarios/") {
                     var cred64 = Base64.encode( data );
                     var token = jwt.sign( data, mySecretKey );
+                    console.info(token);
                     this.close();
                     return res.status( statusCode ).json( token );
                 }else{
                     this.close();
                     return res.status( statusCode ).json({
-                        msg: "Error los datos son incorrectos no se puede loguear al SAGAA"
+                        msg: "error al loguearse al SAGAA"
                     });
                 }
             });
@@ -222,8 +230,9 @@
                 console.info(statusCode);
                 if(statusCode == 200){
                     console.info(body);
+                  //  if(body != "No tiene ninguna planilla para descargar para esta gestión!"){
                     var $ = cheerio.load(body);
-                    var gestiones = [] ;
+                    var gestiones = [];
                         $('form[name="forGestion"]').each( function (){
                             gestiones.push({
                                 idUsuario : $('input[name="idUsuario"]').val()
@@ -240,6 +249,9 @@
                             curlAdm.close();
                             return res.status(200).json(gestiones);
                         });
+                    //}else{
+                    //    return res.status(200).json(body);
+                   // }
                 }else{
                     curlAdm.close();
                     return res.status(statusCode).json(body);
@@ -344,12 +356,18 @@
                 
                 curlPlan.on( 'end', function( statusCode, body , headers) {
                 //inicio scraping carreras
+                    //if(body != "No tiene ninguna planilla para descargar para esta gestión!"){
                     var carreras = [];
                     var $ = cheerio.load(body);
                     buscarCarrera('tr.celdaColorResultado2');
                     buscarCarrera('tr.celdaColorResultado1');
         
                     function buscarCarrera(trCarrera){
+                        //console.info($('span.textoRemarcarContentido').attr('class'));
+                        //if($('span.textoRemarcarContentido').attr('class')){
+                        //console.info("No tiene planilla para descargar");
+
+                        //}else{
                         $(trCarrera).each(function( i, elem){
                             var detalles = [];
                              this === elem
@@ -366,6 +384,8 @@
                                 }
                             });
                             var detalle = {};
+                            console.info(detalles);
+                              if(detalles != "No tiene ninguna planilla para descargar para esta gestión!"){
                                 detalle = {
                                     nro : filtroDetalle( detalles[0] ),
                                     carrera : filtroDetalle( detalles [1] ),
@@ -374,15 +394,27 @@
                                     ultimaDC : filtroDetalle( detalles [4] ),
                                     descarga : filtroDetalle( detalles [5] ),
                                     zip : filtroDetalle( detalles [6] )
-                                };  
-                            carreras.push(detalle);
+                                };
+                                console.info(detalle);
+                                carreras.push(detalle);
+                              }else{ 
+                              console.info(detalles);
+                              carreras.push(detalles);
+                              }
+
                         });
                         console.info('-----carreras --------');
                         console.info( carreras );
-                    };
+                        };
+                    //};
                     //fin scraping carreras
                     this.close(); 
-                    return res.status(200).json(carreras);
+                    console.info(carreras);
+//                    if(carreras == undefined || carreras == null){
+//                        return res.status(200).json({carreras:'No tiene ninguna plantilla para descargar'});
+//                    }else{
+                        return res.status(200).json(carreras);
+//                    }
                 });
     
                 curlPlan.on( 'error', curlPlan.close.bind( curlPlan ) );
