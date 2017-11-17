@@ -3,29 +3,29 @@ angular.module('starter.services', [])
  //Dividiendo el archivo Sis 
     return {
         divFile : function(data , template){
-            console.log(data);
+           // console.log(data);
             var aux;
             if(template == 'informacion'){
-               console.log((((((data.pcd).head)[0]).info))[0]);
+             //  console.log((((((data.pcd).head)[0]).info))[0]);
                return (((((data.pcd).head)[0]).info))[0];
             }else{
                 if(template == 'materias'){  
-                    console.log((((((data.pcd).head)[0]).group)[0]).normal);
+               //     console.log((((((data.pcd).head)[0]).group)[0]).normal);
                     return (((((data.pcd).head)[0]).group)[0]).normal;
                 }else{
                     //fin head
                     if(template == 'mesas'){
-                        console.log((((((data.pcd).head)[0]).group)[0]).me);
+                 //       console.log((((((data.pcd).head)[0]).group)[0]).me);
                         return (((((data.pcd).head)[0]).group)[0]).me;
                     }else{
                     //body 
-                                console.log(((((data.pcd).body)[0]).gradelist)[0]);
+                           //     console.log(((((data.pcd).body)[0]).gradelist)[0]);
                                 var obj = ((((data.pcd).body)[0]).gradelist)[0];
                                 obj["_"] = null; 
                                 delete obj._;
 
-                                console.log(data.pcd);
-                                console.log(Object.keys(obj).length);
+                             //   console.log(data.pcd);
+                               // console.log(Object.keys(obj).length);
                                 return  obj[template];
                     //fin body */
                      }
@@ -35,7 +35,7 @@ angular.module('starter.services', [])
 
        //Separando por "," y eliminando el inicio y el final porq son campos vacios
         sepDatos : function(infoCadena){
-            console.log(infoCadena);
+           // console.log(infoCadena);
         var arrayInfo = infoCadena.split(",");
             arrayInfo.splice(0, 1);
             arrayInfo.splice(arrayInfo.length-1, 1);
@@ -61,7 +61,7 @@ angular.module('starter.services', [])
         },
 
         crearBDGrupo: function(array){
-            console.log(array);
+            //console.log(array);
             return newBD = {
                 'codP' : array[0],
                 'codMat' : array[1],
@@ -107,18 +107,18 @@ angular.module('starter.services', [])
         },
         //Unir datos
         unirFile : function(data, cadenaListaE, codP, tipo){
-                    console.log(data);
+                   // console.log(data);
                     var array = [];
                     if( tipo == 'ME'){
                         array = cadenaListaE;
                         ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
-                        console.log(data);
+                     //   console.log(data);
                     }else{
                        array = cadenaListaE;
                        ((((((data.pcd).body)[0]).gradelist)[0])[codP])[0] = array;
-                       console.log(data);
+                       //console.log(data);
                      }
-            console.log(((((((data.pcd).body)[0]).gradelist)[0])[codP])[0]);
+            //console.log(((((((data.pcd).body)[0]).gradelist)[0])[codP])[0]);
             //return cadenaListaE;
             return data;
         },
@@ -194,7 +194,7 @@ angular.module('starter.services', [])
 .service('GuardarListaEst', function(){
     return {
         guardarLE : function(estudiante){
-        console.log(estudiante);
+       // console.log(estudiante);
        }
     }
 })
@@ -243,6 +243,17 @@ angular.module('starter.services', [])
         }
     }
 })
+.service('Usuario', function(){
+    var idUsuario;
+    return {
+        setIdUsuario: function(idUsuario){
+            idUsuario = idUsuario;
+        },
+        getIdUsuario : function(){
+            return idUsuario;
+        }
+    }
+})
 /*.factory('sisFactory', function($http) {
     var urlBase = 'http://localhost:3000';
     //var sisFactory = {};
@@ -264,14 +275,14 @@ angular.module('starter.services', [])
             //si realiza para cuando los enviamos
             //necesito este dato para save el envio
            logHttp.push(config);
-           console.log("entro al request sin errores");
+          // console.log("entro al request sin errores");
             return config;
         },
 
         'requestError': function(rejection){
-            console.log("It request have error");
+            //console.log("It request have error");
             window.localStorage.setItem('id_request', data);
-            console.log("cuando existe problemas in request");
+            //console.log("cuando existe problemas in request");
             // $rootScope.$broadcast("msg");
             // $rootScope.$on("msg", function(){
              alert('Existe algun error en la peticion');
@@ -280,10 +291,10 @@ angular.module('starter.services', [])
         },
 
         'response': function(response){
-            console.log("The request good");
+            //console.log("The request good");
             if(window.localStorage.getItem('id_request')){
                 window.localStorage.removeItem('id_request');
-                console.log("elimino id_request");
+                //console.log("elimino id_request");
             }
             return $timeout(function(){
                 return response;
@@ -294,16 +305,16 @@ angular.module('starter.services', [])
         'responseError': function(rejection){
             //necesito este dato para ver q la respuesta es correcta
             //verificar q me responde el backend
-            console.log("tenemos algun ERROR");
+            //console.log("tenemos algun ERROR");
             if(rejection.status === 404){
-                console.log("error en la coneccion");
+              //  console.log("error en la coneccion");
                 window.localStorage.setItem('id_request', data);
                // window.location.reload();
                //  $state.reload();
 
             }
             if(rejection.status === -1){
-                console.log("error de -1");
+             //   console.log("error de -1");
        //      alert('Existe algun error en la respuesta');
                 window.localStorage.setItem('id_request', data);
                 //window.location.reload();
@@ -322,21 +333,21 @@ angular.module('starter.services', [])
    var responseConfig = [];
     return {
         push: function(config) {
-            console.log("push");
+            //console.log("push");
             requestsConfig = config;
         },
         getAllRequests: function() {
-            console.log("entra al All request");
-            console.log($q.reject(requestsConfig));
+            //console.log("entra al All request");
+            //console.log($q.reject(requestsConfig));
             return requestsConfig;
         },
         pushR: function(config){
-            console.log("entro al pushR");
+            //console.log("entro al pushR");
             responseConfig = config;
         },
         getAllResponse: function(){
-            console.log("entro al get Response");
-            console.log($q.reject());
+            //console.log("entro al get Response");
+            //console.log($q.reject());
             return responseConfig;
         }
     }
@@ -351,7 +362,7 @@ angular.module('starter.services', [])
         getAllSagaas: getAllSagaas,
         addSagaa: addSagaa,
         updateSagaa: updateSagaa,
-        updateSagaaPCD: updateSagaaPCD,
+    //    updateSagaaPCD: updateSagaaPCD,
         deleteSagaa: deleteSagaa,
         
     };
@@ -369,8 +380,15 @@ angular.module('starter.services', [])
     };
 
     function updateSagaa(sagaa) {
-        console.log("this is data");
-         return $q.when(_db.put(sagaa));
+        console.log("this is data update");
+        console.log(sagaa);
+         $q.when(_db.put(sagaa)).then(function(response){
+            console.log(sagaa._id);
+            console.log(sagaa);
+         }).catch(function(error){
+            console.log(error);
+         })
+         
     }
     function updateSagaaPCD(nuevo, actual) {
         console.log("this update");
@@ -396,6 +414,7 @@ angular.module('starter.services', [])
 
     function deleteSagaa(sagaa) {
         console.log("this delete");
+        console.log(sagaa);
         return $q.when(_db.remove(sagaa));
     };
 
@@ -424,7 +443,7 @@ angular.module('starter.services', [])
             });
     } else {
         // Return cached data as a promise
-        console.log(typeof(_sagaas));
+       // console.log(typeof(_sagaas));
         return $q.when(_sagaas);
     }
   };
@@ -462,7 +481,7 @@ function findIndex(array, id) {
 
     function getObjeto(dato, sagaa){
         for(var i = 0; i<sagaa.length; i++){
-            console.log(sagaa[i]);
+           // console.log(sagaa[i]);
             if( sagaa[i].dato){
                 return i;
             }

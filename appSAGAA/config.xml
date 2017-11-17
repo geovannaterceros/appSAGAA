@@ -48,4 +48,7 @@
     <plugin name="cordova-sqlite-storage" spec="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="~2.1.0" />
     <plugin name="cordova-plugin-background-mode" spec="https://github.com/katzer/cordova-plugin-background-mode.git" />
+    <plugin name="phonegap-plugin-push" spec="~2.1.0">
+        <variable name="SENDER_ID" value="12341234" />
+    </plugin>
 </widget>

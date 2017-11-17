@@ -30,14 +30,27 @@ angular.module('starter.factorys',[])
      console.log(fileJ);
      var defered = $q.defer();
      var promise = defered.promise;
+        
          $http.post(urlBase+'/sisF', fileJ, conf)
          .success(function(data) {
           console.log(data);
           defered.resolve(data);
-             $location.path("app/materias");
+            if(window.localStorage.getItem('guardar')){
+             window.localStorage.removeItem('guardar');
+            }else{
+                $location.path("app/materias");
+            }
           })
           .error(function(err) {
-             defered.reject(err)
+             defered.reject(err);
+      //       console.log("I have error subir file");
+        //     console.log(logHttp.getAllRequests());
+             window.localStorage.setItem('id_request', logHttp.getAllRequests());
+             alert("Vamos a guardar localmente los datos, porque no tenemos connecion de datos, wifi");
+             if(!window.localStorage.getItem('guardar')){
+                 window.localStorage.setItem( 'guardar'  ,'guardar');
+             }
+             $location.path("app/materias");
           });
          return promise; 
     },
@@ -56,17 +69,17 @@ angular.module('starter.factorys',[])
     //datos para realizar la session en el del servidor al saga
     sisFactory.posDataUsuario = function(datos){
      var usuarioJ = JSON.stringify(datos);
-        console.log(usuarioJ);
+        //console.log(usuarioJ);
         var defered = $q.defer();
         var promise = defered.promise;
 
          $http.post(urlBase+'/datosU', usuarioJ,{skipAuthorization:true})
          .success(function(data) {
-             console.log(data);
+             //console.log(data);
              //primera vez q entra con esta cuenta guarda los datos en el token
              //verificar los datos
             if(data){//verifica si entraga datos erroneos
-                console.log("guarda los datos");
+               // console.log("guarda los datos");
                 if(!window.localStorage.getItem('id_token')){
                     window.localStorage.setItem('username', datos.username);
                     window.localStorage.setItem('password', datos.password);
@@ -83,7 +96,7 @@ angular.module('starter.factorys',[])
             // verificamos q exista la cookies
             // antes haiga realizado, su session
           .error(function(err){
-             console.log(err);
+            // console.log(err);
              defered.reject(err);
           });
          return promise;
@@ -94,15 +107,15 @@ angular.module('starter.factorys',[])
         var skipAuthorization = false;
          $http.post(urlBase+'/gestion', {skipAuthorization : false}, conf)
          .success(function(data) {
-          console.log(data);
+          //console.log(data);
           defered.resolve(data);
            // $location.path("app/gestion");
           })
           .error(function(err) {
              defered.reject(err)
-             console.log("I have error");
-             console.log("Of Data Interceptor:");
-             console.log(logHttp.getAllRequests());
+            // console.log("I have error");
+            // console.log("Of Data Interceptor:");
+             //console.log(logHttp.getAllRequests());
              window.localStorage.setItem('id_request', logHttp.getAllRequests());
           });
          return promise; 
@@ -115,15 +128,15 @@ angular.module('starter.factorys',[])
         var skipAuthorization = false;
          $http.post(urlBase+'/carrera', gestionD, {skipAuthorization : false}, conf)
          .success(function(data) {
-          console.log(data);
+          //console.log(data);
           defered.resolve(data);
            // $location.path("app/gestion");
           })
           .error(function(err) {
              defered.reject(err)
-             console.log("I have error");
-             console.log("Of Data Interceptor:");
-             console.log(logHttp.getAllRequests());
+             //console.log("I have error");
+             //console.log("Of Data Interceptor:");
+             //console.log(logHttp.getAllRequests());
              window.localStorage.setItem('id_request', logHttp.getAllRequests());
           });
          return promise; 
@@ -136,14 +149,14 @@ angular.module('starter.factorys',[])
         var skipAuthorization = false;
          $http.post(urlBase+'/detalle', descargarD, {skipAuthorization : false}, conf)
          .success(function(data) {
-          console.log(data);
+          //console.log(data);
           defered.resolve(data);
            // $location.path("app/gestion");
           })
           .error(function(err) {
              defered.reject(err)
-             console.log("I have error");
-             console.log(logHttp.getAllRequests());
+             //console.log("I have error");
+             //console.log(logHttp.getAllRequests());
              window.localStorage.setItem('id_request', logHttp.getAllRequests());
 
           });
@@ -171,11 +184,11 @@ angular.module('starter.factorys',[])
         
         request: function(config){
           if(config.url.endsWith('.html')) {
-            console.log("Peticion html");
+            //console.log("Peticion html");
           }else{
              requestInitiated = true;
              showLoadingText();
-             console.log('La peticion inicializa con Interceptor');
+            // console.log('La peticion inicializa con Interceptor');
           }
           return config;
         },
@@ -185,21 +198,21 @@ angular.module('starter.factorys',[])
             $timeout(function(){
                 if(requestInitiated) return;
                 hideLoadingText();
-                console.log('Respuesta con Interceptor');
+               // console.log('Respuesta con Interceptor');
             }, 300);
             return response;
         },
         
         requestError : function (err){
             hideLoadingText();
-            console.log('Request error via Interceptor');
+            //console.log('Request error via Interceptor');
             return err;
         },
         
         responseError : function (err){
             hideLoadingText();
-            console.log('ErrorRespuesta via Interceptor');
-            console.log("q.reject" + $q.reject(err));
+            //console.log('ErrorRespuesta via Interceptor');
+            //console.log("q.reject" + $q.reject(err));
             return $q.reject(err);
         }
     }

@@ -65,11 +65,21 @@
         console.log('POST /Guardarrr');
         console.log('res tipo pos 0:' + req.body[0].codP);
         console.log('res tipo pos 1:' + req.body[1].pcd );
+    //var grupo = {codP : window.localStorage.getItem('codP'), 
+      //           tipo : window.localStorage.getItem('tipo')};
+        console.log(req.body);
+        if(req.body.length > 2){
+        console.log('res tipo pos 3:' + req.body[2]);
+        console.log('res tipo pos 4:' + req.body[3]);
+        console.log('res tipo pos 5:' + req.body[4]);
+        usuarioId = req.body[2];
+        gestionId = req.body[3];
+        nombreAr = req.body[4];
+        }
 
         //modifica el file
         sisF(req.body[1]);
         var respuestaS;
-        //console.log(usuarioId); 
        //------Inicio sincronized with SAGAA UPLOAD
     if(usuarioId){
         app.use(Curl);
@@ -524,6 +534,7 @@
    var datafile;//guardo cuando descargo el archivo es el body original
    var inicio;//datos para armar
    var fin;//datos para armar
+   var pathIF =  '/home/geovanna/appSAGAA/appSAGAA/www/archivo/';
 
    //modificar en tiempo real al file 
    /*fs.watch(path1, function(event, targetfile){
@@ -592,7 +603,7 @@
         //elimina los espacios vacios
         for(var i = 0;  i< arrayLinea.length; i++){
             var cadena = arrayLinea[i];
-           if(cadena == ''  ){ 
+           if(cadena == ''){ 
                 arrayLinea.splice( i,1 );
             }
         }
@@ -613,14 +624,28 @@
         console.log("------>los datos sin , adelante-------");
         console.log(arrayLinea);
         //aumenta la llave del archivo del inicio y del final
+        console.log("fin::"+ fin);
+        console.log("inicio::"+ inicio);
+        if(fin){
         fin = fin.replace( re, '' );
         inicio = inicio.replace( re, '');
+        }else{
+            finSIS(nombreAr);
+        }
+        console.log("fin::"+ fin);
+        console.log("inicio::"+ inicio);
+        //hasta aqui debo modificar
         arrayLinea.unshift(inicio);
         arrayLinea.push(fin); 
         newDato(path1, arrayLinea);
         return arrayLinea;
     
      };
+    /*Variable Incio y fin para guardar el pcd que ha sido modificado
+     * de forma offline
+     * */
+
+
     /* Es un metodo intermediario manda a buscar lo q se debe cambiar luego le
      * manda a reemplazarlo en el file.sis
      * */
@@ -633,11 +658,12 @@
         }
 
     }
+    /*Inicia y guarda obtenemos del file
+     * */
     /*Recorre todo el file.sis existente en el servidor y busca la diferencias
      * y la almacena en el array datoAntiguo, datoNuevo ,para luego modificarlo.
      */
-    function searchDato (pathlocal, arrayM){
-    
+    function searchDato (pathlocal, arrayM){ 
        fs.readFileSync(pathlocal).toString().split('\n').forEach(recorriendo);
         function recorriendo(line, index, arr) {
             //aux es cada linea el file.sis y eliminandole los saltos de linea
@@ -721,7 +747,44 @@
         return xml;
         
     };
-
+    function files(){
+        var archivo ;
+        var may ;
+        fs.readdir(pathIF, (err, files) => {
+            files.forEach(file => {
+                fs.stat(pathIF + file , function(err, stats){
+                var mtime = new Date(stats.mtime);
+                    if(may){
+                      if(may < mtime){
+                          may = mtime
+                          console.log(file);
+                          archivo = file;
+                      }
+                    }else{
+                    may = mtime
+                    }
+                });
+            });
+        return archivo;
+        });
+        //return archivo;
+   }
+   function finSIS(nombreAD){
+        var path = "../archivo/";
+        var name = nombreAD;
+        path1 = path + name;
+        var array = fs.readFileSync(path1).toString().split('\n');
+        inicio =  array[0];
+        fin = array[array.length-1];
+        console.log(array[0]);
+        console.log(array[array.length-1]);
+     //   fs.readFile(path, function(err, f){
+     //       var array = f.toString().split('\n');
+            // use the array
+      //  });
+    }
    app.listen(8080, function () {
       console.log('Example app listening on port 8080!');
+    //  console.log(files());
+    //    finSIS('URRUTIA_MEDRANO_JOSE_A._198800028_-_299701_2-2015.sis')
    });

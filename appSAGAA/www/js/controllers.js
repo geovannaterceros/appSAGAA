@@ -1,5 +1,5 @@
 angular.module('starter.controllers', [])
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService, ListaEstServ, $ionicPopover, $ionicHistory, $ionicPopup, $rootScope, $stateParams, $state) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, GuardarData, sisFactory, $location, $ionicPlatform, SagaaService, ListaEstServ, $ionicPopover, $ionicHistory, $ionicPopup, $rootScope, $stateParams, $state, ConnectivityMonitor, $interval) {
     $ionicPlatform.ready(function() {
         SagaaService.initDB();
     });
@@ -16,7 +16,7 @@ angular.module('starter.controllers', [])
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
-  // Open the login modal
+  /// Open the login modal
   $scope.login = function() {
     $scope.modal.show();
   };
@@ -35,7 +35,7 @@ angular.module('starter.controllers', [])
   $scope.logout = function(){
   $scope.currState = $state;
   var currentSate = $state.current.name;
-  console.log($state.current.name); 
+  //console.log($state.current.name); 
   var myPopup = $ionicPopup.show({
      title: '¿Deseas trabajar offline?',
      buttons: [{
@@ -72,55 +72,87 @@ angular.module('starter.controllers', [])
    * de subirlo cuando el servidor del sagaa este disponible
   */
   $scope.guardarLE = function(){
-    console.log("ya podemos guardar");
-
     var grupo  = ListaEstServ.getcodP();
     var listaE = GuardarData.getDataSis();
     var data = [];
     data.push(grupo);
     data.push(listaE);
-    sisFactory.postDataSis( data )
-    .then(function(result){
-        console.log("Ha sido guardado en el servidor, sin problemas");
-    }).catch(function(){
-        alert("Vamos a guardar localmente los datos, porque no tenemos connecion de datos, wifi");
-        SagaaService.updateSagaa(data);
-        $ionicHistory.clearCache().then(function(){
-            $location.path("/materias");
-        });
+  //  console.log(data);
+    $timeout( function() {
+      sisFactory.postDataSis( data )
+      .then(function(result){
+           // $timeout( function(){
+           // sagaaGuardar(listaE);
+           // $rootScope.$apply(); 
+           // mostrarModificado();
+           // });
+           /* document.addEventListener('deviceready', function () {
+                cordova.plugins.backgroundMode.enable();
+                cordova.plugins.backgroundMode.on('enable', function() {
+                });
+                cordova.plugins.backgroundMode.on('activate', function(){
+                        enviarBackground(data); 
+                        console.log(cordova.plugins.backgroundMode.isActive());
+                }); 
+            }, false);*/
+    });
     });
   };
-  function eliminaBusca(sagaa){
-    console.log(sagaa);
-    for(var i = 0; i< sagaa.length; i++){
-        if(sagaa[i].pcd){
-            console.log(sagaa[i].pcd);
-            SagaaService.deleteSagaa(sagaa[i]);
+  /*function enviarBackground(data){
+    var promise = $interval(function(){
+        if(ConnectivityMonitor.isOnline()){
+            //console.log(window.localStorage.getItem('id_request'));
+            if(data){
+              $timeout( function() {
+                  var user = {
+                      username : window.local.Storage.getItem('username'),
+                      password : window.local.Storage.getItem('password')}
+                     sisFactory.posDataUsuario(user).then(function(result){
+                    //console.log("response of DataUsuario");
+                    //console.log(result);
+                }).catch(function(result){
+                    //Si la respuesta es diferente a 200 mostrara un alerta
+                   console.log(result);  
+                });
+              });
+             /* $timeout( function() {
+                sisFactory.postDataSis(data)
+                    .then(function(result){
+                        window.localStorage.removeItem('id_request');
+                        console.log("Ha sido guardado en el servidor, sin problemas");
+                        cordova.plugins.backgroundMode.disable();//debe parar el siclo
+                        console.log(cordova.plugins.backgroundMode.isActive());
+                        $interval.cancel(promise);
+                    }).catch(function(e){
+                            console.log(error);
+                    });
+              });
+             }
         }
-    }
-  }
+    },3000);
+
+                   $location.path("/materias");
+  };*/
  //Cerrar la lista de archivo sis
  $scope.cerrarLE = function(){
-    console.log("cerrar la lista de estudiantes");
+    //console.log("cerrar la lista de estudiantes");
     $location.path("/seleccionar");
  };
  //Menu Izquierdo
  $scope.abrirEstudiante = function(){
     $location.path("/estudiantes");
-    console.log("entro abrir estudiante");
+    //console.log("entro abrir estudiante");
  };
 
  $scope.cerrarMateria = function(){
     $location.path("/seleccionar");
-    console.log("cerrar materia");
+    //console.log("cerrar materia");
  }
       if($ionicHistory.currentStateName() == "app.inicio"){
         $scope.mostrarAtras = true;
       }else{
         $scope.mostrarAtras = false;
       }
-    console.log($ionicHistory.currentStateName());
-    console.log("volver atras");
 //Ionic Material Design
 
     $scope.isExpanded = false;
@@ -201,21 +233,7 @@ angular.module('starter.controllers', [])
         }
     };
 })
-
-/*.controller('PlaylistsCtrl', function($scope, $ionicModal, $ionicPlatform ) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})*/
-.controller('InicioCtrl', function($scope, $location, $timeout, $ionicPopup, ConnectivityMonitor, sisFactory, SagaaService, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $ionicHistory){
+.controller('InicioCtrl', function($scope, $location, $timeout, $ionicPopup, ConnectivityMonitor, sisFactory, SagaaService, $stateParams, ionicMaterialInk, $ionicSideMenuDelegate, $ionicHistory, Usuario){
 //para eliminar que se muestre los menu izquierdo
     $ionicSideMenuDelegate.canDragContent(false);
 //Beging ionic material design
@@ -229,25 +247,39 @@ angular.module('starter.controllers', [])
 
     $scope.user = {};
     $scope.login = function () {
-        console.log($scope.user);
+       // console.log($scope.user);
        //verifica los datos de entrada
         if(typeof($scope.user)=='undefined'|| typeof($scope.user.username)=='undefined'|| typeof($scope.user.password)=='undefined'){
             $scope.showAlert('Debe ingresar usuario y password.');
          }else{
              //no existe wifi disponible
              //controla el wifi en el dispositivo
-            console.log(ConnectivityMonitor.isOnline());
+         //   console.log(ConnectivityMonitor.isOnline());
             if(ConnectivityMonitor.isOnline()){
-                console.log(ConnectivityMonitor.isOnline());
+           //     console.log(ConnectivityMonitor.isOnline());
                 //connectarme a mi servidor auxiliar
                 //This petion, interceptor in service
                 //cuando hacemos peticiones al servidor
+                $timeout( function() {
                 sisFactory.posDataUsuario($scope.user).then(function(result){
-                    console.log("response of DataUsuario");
-                    console.log(result);
+                    $timeout( function() {
+                    if(window.localStorage.getItem('guardar')){
+                    $timeout( function() {
+                        SagaaService.getAllSagaas()
+                        .then( function( sagaas ) {
+                            console.log(sagaas);
+                            var dato = getDato(sagaas);
+                                if(dato){
+                                guardarSIS(dato);
+                            }
+                        });
+                      });
+                      };
+                    });
                 }).catch(function(result){
                     //Si la respuesta es diferente a 200 mostrara un alerta
-                   console.log(result);  
+                 //  console.log(result);  
+                });
                 });
             }else{
                 var myPopup = $ionicPopup.show({
@@ -265,13 +297,13 @@ angular.module('starter.controllers', [])
                     text: '<b>SI</b>',
                     type: 'button-positive',
                     onTap: function(e) {
-                        console.log("mostrar factory token:" + window.localStorage.getItem('id_token'));
+                      //  console.log("mostrar factory token:" + window.localStorage.getItem('id_token'));
                         var usernameOff = window.localStorage.getItem('username');
                         var passwordOff = window.localStorage.getItem('password');
-                        console.log(usernameOff);
-                        console.log(passwordOff);
+                        //console.log(usernameOff);
+                        //console.log(passwordOff);
                         if($scope.user.username ===  usernameOff && $scope.user.password === passwordOff){
-                            console.log("ya existe te muestra" + window.localStorage.getItem('id_token'));
+                            //console.log("ya existe te muestra" + window.localStorage.getItem('id_token'));
                             $location.path("app/gestion");
                             return null;
                         }else{
@@ -282,23 +314,117 @@ angular.module('starter.controllers', [])
                         }
                     }]
             });
-                            defered.resolve(data);
-                //usamos en modo offline sin comunicacion externa
-             /*   alert('Se esta utilizando en modo offline sin wifi y sin conneccion de datos, verificando si tiene session guardada');
-                console.log(window.localStorage.getItem('id_token'));
-                if(window.localStorage.getItem('id_token')){
-                    alert('Se esta utilizando en modo offline, ha recuperado su session anterior de los datos del celular');
-                    console.log(window.localStorage.getItem('id_token'));
-                    $location.path("app/gestion");
-                }else{
-                    alert('No se puede utilizar en modo offline porque no ha creado anteriormente su cuenta.');
-                 //    $scope.showAlert("No hay conneccion a internet");
-                     console.log(ConnectivityMonitor.isOnline());
-                     $location.path('/app/inicio');
-                    }*/
+            defered.resolve(data);
             };
         };
     };
+    function guardarSIS(datos){
+    var grupo = {codP : window.localStorage.getItem('codP'), 
+                 tipo : window.localStorage.getItem('tipo')};
+    var idUsuario = buscarDato(datos, 'usuario');
+    var idGestion =  buscarDato(datos, 'gestion');
+    var nombreArc =  buscarDato(datos, 'carrera');
+    var pcd = buscarDato(datos, 'pcd');
+    var data = [];
+    data.push(grupo);
+    data.push(pcd);
+    data.push(idUsuario);
+    data.push(idGestion);
+    data.push(nombreArc);
+    console.log(data);
+       $timeout( function() {
+                    sisFactory.postDataSis(data)
+                    .then(function(result){
+                            console.log("Ha sido guardado en el servidor, sin problemas");
+                     }).catch(function(e){
+                            console.log(e);
+                    });
+       });
+    }
+    function buscarDato(id, dato){
+        console.log(dato);
+        var idAux;
+        var aux;
+        for (var i= 0;  i < id.length; i++){
+            aux = id[i];
+            if(dato ===  'pcd'){
+                if(aux.pcd){
+                    i = aux.length;
+                    idAux = aux;
+                }
+            }else{
+                if(dato ===  'carrera'){
+                    if(aux.nombreArc){
+                        i = aux.length;
+                        idAux = aux.nombreArc
+                    }
+                }else{
+                    if(dato === 'gestion'){
+                        if(aux.id){
+                        i = aux.length;
+                        idAux = aux.id;
+                        }
+                    }else{
+                        if(dato === 'usuario'){
+                            if(aux.idUsuario){
+                                console.log(aux.idUsuario);
+                                i = aux.length;
+                                idAux = aux.idUsuario;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log(idAux);
+        return idAux;
+    }
+    function getDato(sagaa){
+        console.log(sagaa);
+        var dato = [];
+        for(var i = 0; i<sagaa.length; i++){
+            var aux = sagaa[i];
+       //     console.log(aux);
+           if(aux.hasOwnProperty("pcd")){
+               console.log(aux)
+                var pcd = { pcd: aux.pcd};
+              //  delete pcd._id;
+              //  delete pcd._rev;
+                console.log(pcd);
+                dato.push(pcd);
+            }else{
+            if(!aux.hasOwnProperty("pcd")& !aux.hasOwnProperty("carrera")){
+                console.log(aux);
+                var gestion = {id : aux.id,
+                               name : aux.name,
+                               idUsuario : aux.idUsuario};
+                //delete gestion._id;
+                //delete gestion._rev;
+                console.log(gestion);
+                dato.push(gestion)
+            }else{
+            if(!aux.hasOwnProperty("pcd") &  !aux.hasOwnProperty("name")){
+                console.log(aux);
+                var carrera = { nro : aux.nro,
+                                carrera : aux.carrera,
+                                nombreArc : aux.nombreArc,
+                                numeroDC : aux.numeroDC,
+                                ultimaDC : aux.ultimaDC,
+                                descarga : aux.descargar,
+                                zip : aux.zip
+                };
+                //delete carrera._id;
+                //delete carrera._rev;
+                console.log(carrera);
+                dato.push(carrera);
+            }
+            }
+            }
+        }
+        console.log(dato);
+        return dato;
+    }
+
   /* $scope.login = function(user) {
 
        //verifica los datos de entrada
@@ -350,7 +476,7 @@ angular.module('starter.controllers', [])
         enableFriends: true
     };
 })
-.controller('GestionCtrl', function($scope, $timeout, sisFactory, $location, GestionDato, UsuarioDato, $state, $ionicPlatform , $ionicLoading, SagaaService, ObjetoService, $ionicPopup, $ionicHistory){
+.controller('GestionCtrl', function($scope, $timeout, sisFactory, $location, GestionDato, UsuarioDato, $state, $ionicPlatform , $ionicLoading, SagaaService, ObjetoService, $ionicPopup, $ionicHistory, ConnectivityMonitor ){
     $ionicHistory.clearCache();
     
     $ionicPlatform.ready(function() {
@@ -359,11 +485,11 @@ angular.module('starter.controllers', [])
 
     setTimeout( function() {
         sisFactory.posDataGestion()
-            .then( function( result ) {
-                console.log( result );
-                console.log( 'idUsuario:' + result[0].idUsuario );
+        .then( function( result ) {
+              //  console.log( result );
+              //  console.log( 'idUsuario:' + result[0].idUsuario );
                 UsuarioDato.setUsuario( result[0].idUsuario );
-                mostrarG(result);
+                mostrarG(result);//no esta envuelto en SagaaService
         }).catch( function ( result ) {
             $timeout( function() {
                 SagaaService.getAllSagaas()
@@ -383,40 +509,43 @@ angular.module('starter.controllers', [])
     };
     
     function offGestion(sagaa){
-        console.log(sagaa)
         for(var i = 0; i<sagaa.length; i++){
             var aux = sagaa[i];
-            console.log(aux);
            if(!aux.hasOwnProperty("pcd")& !aux.hasOwnProperty("carrera")){
-                   console.log(aux);
-                   var gestion  = aux;
-                    delete gestion.idUsuario;
-                    delete gestion._id;
-                    delete gestion._rev;
-                    console.log(gestion);
+                   //console.log(aux);
+                   var gestion  = {id: aux.id,
+                                   name: aux.name}
+                    console.log(aux);
+                    console.log(gestion)
                     var dato = [gestion];
-                   $scope.gestiones = dato ;
-                   i = sagaa.length;
+                    $scope.gestiones = dato ;
+                    i = sagaa.length;
             };
         };
     };
     function actualizarG(sagaa, dato){
+        console.log("gestion:" + sagaa.length);
         if(sagaa.length != 0){
           for(var i = 0; i<sagaa.length; i++){
               var aux = sagaa[i];
                if (aux.hasOwnProperty('name')){
+                 console.log("entro" +  aux);
+                 console.log(sagaa[i]);
                  SagaaService.deleteSagaa(sagaa[i]);
+                 console.log(dato); 
                  SagaaService.addSagaa(dato);
                  i =  sagaa.length;
                 }
             };
         }else{
+        console.log("entro add gestion");
             SagaaService.addSagaa(dato);
         }
-    }
+    };
+
     $scope.gestionSelec = function (g ){
         GestionDato.setGestion(g);
-        console.log(GestionDato.getGestion(g));
+        //console.log(GestionDato.getGestion(g));
         var dato = {
             idGestion : g.id,
            // nameGestion: g.name,
@@ -427,23 +556,28 @@ angular.module('starter.controllers', [])
             name: g.name,
             idUsuario : UsuarioDato.getUsuario()
         }
+        if(ConnectivityMonitor.isOnline()){
         $timeout( function(){
             SagaaService.getAllSagaas()
             .then( function( sagaas ){
+                console.log(offlineGestion);
+                console.log(dato);
                 actualizarG(sagaas, offlineGestion);
+        
             });
         });
+        };
     setTimeout(function() {//revisar que funcione
         sisFactory.posDataCarrera(dato).then(function(result){
-        console.log(((result)[0])[0]);
+        //console.log(((result)[0])[0]);
         if((((result)[0])[0]) ==  "No tiene ninguna planilla para descargar para esta gestión!"){
-            console.log("NO hay planilla");
+           // console.log("NO hay planilla");
                 $ionicPopup.alert({
                 title: 'Importante',
                 template: (((result)[0])[0]),
                 });
         }else{
-            console.log("si tiene planilla");
+            //console.log("si tiene planilla");
             $location.path("/app/seleccionar");
         }
     }).catch(function(result){
@@ -453,107 +587,119 @@ angular.module('starter.controllers', [])
     };
 
 })
-.controller('SeleccionarCtrl', function($scope ,$location ,$state , $timeout, $ionicPlatform, GestionDato, UsuarioDato, CarreraDato,sisFactory, SagaaService, $ionicHistory){
+.controller('SeleccionarCtrl', function($scope ,$location ,$state , $timeout, $ionicPlatform, GestionDato, UsuarioDato, CarreraDato,sisFactory, SagaaService, $ionicHistory, ConnectivityMonitor ){
     $ionicHistory.clearCache();
-    console.log(GestionDato.getGestion());
-    console.log(GestionDato.getGestion().id)
-    console.log(UsuarioDato.getUsuario());
-    
+  //  console.log(GestionDato.getGestion());
+  //  console.log(GestionDato.getGestion().id)
+  //  console.log(UsuarioDato.getUsuario()); 
     var dato = {
                 idGestion : GestionDato.getGestion().id,
                 idUsuario : UsuarioDato.getUsuario()
     }
 
     sisFactory.posDataCarrera(dato).then(function(result){
-        console.log(result);
+    //    console.log(result);
   //      console.log(((result)[0])[0]);
         if((((result)[0])[0]) !=  "No tiene ninguna planilla para descargar para esta gestión!"){
-       /* $timeout(function(){
-            SagaaService.getAllSagaas().then(function(sagaas){
-                actualizar(sagaas, result); 
-            });
-        });*/
-            mostrarS(result);
+        mostrarS(result);
         }else{
             $scope.error = (result);
         }
     }).catch(function(result){
         $timeout(function(){
             SagaaService.getAllSagaas().then(function(sagaas){
-                console.log(sagaas);
+               // console.log(sagaas);
                 offSeleccionar(sagaas);
             });
         });
-       console.log("tenemos error");
+       //console.log("tenemos error");
     });
     function mostrarS(dato){
         var json = {};
-            for( var i = 0; i < dato.length; i++ ){
-                json [i] = dato[i];
-            }
-        $scope.carreras = json;
+        for( var i = 0; i < dato.length; i++ ){
+            json [i] = dato[i]; 
+            $scope.carreras = json;
+        }
     }
-    function actualizarS(sagaa, dato){
+    function actualizarS(sagaa, c){
+        console.log("carrera:" + sagaa.length);
         if(sagaa.length != 1){
           for(var i = 0; i<sagaa.length; i++){
-              console.log(sagaa[i]);
+              //console.log(sagaa[i]);
+              //console.log(sagaa.length);
               var aux =  sagaa[i];
                if(aux.hasOwnProperty("carrera")){
+       //            console.log(sagaa[i]);
                    SagaaService.deleteSagaa(sagaa[i]);
-                   SagaaService.addSagaa(dato);
+                   //console.log(c);
+                   SagaaService.addSagaa(c);
+                  //SagaaService.updateSagaa(dato);
                    i =  sagaa.length;
               };
             };
         }else{
-            SagaaService.addSagaa(dato);
+            console.log("entro add carrera")
+            SagaaService.addSagaa(c);
         }
     };
     function offSeleccionar(sagaa){
         for(var i = 0; i<sagaa.length; i++){
             var aux = sagaa[i];
             if(!aux.hasOwnProperty("pcd") &  !aux.hasOwnProperty("name")){
-                var carrera = aux;
-                console.log("carrera_id" + carrera._id);
-                delete carrera._id;
-                delete carrera._rev;
+                //var carrera = aux;
+                var carrera = { nro : aux.nro,
+                                carrera : aux.carrera,
+                                nombreArc : aux.nombreArc,
+                                numeroDC : aux.numeroDC,
+                                ultimaDC : aux.ultimaDC,
+                                descarga : aux.descargar,
+                                zip : aux.zip
+                };
+                //console.log("carrera_id" + carrera._id);
+                //delete carrera._id;
+                //delete carrera._rev;
                 var dato = [carrera];
                 $scope.carreras = dato;
-                console.log(carrera);
+                //console.log(carrera);
                 i= sagaa.length;
             }
         }
     };
     
     $scope.listaC = function (c){
-        console.log(c);
+        //console.log(c);
         CarreraDato.setCarrera(c);
+        if(ConnectivityMonitor.isOnline()){
         $timeout(function(){
             SagaaService.getAllSagaas().then(function(sagaas){
-                actualizarS(sagaas, c); 
+                //console.log(c);
+                actualizarS(sagaas, c);
             });
         });
+        };
         $location.path("/app/detalle");
     }
 })
-.controller('DetalleCtrl', function($scope, CarreraDato, sisFactory, SagaaService, $timeout, $location, $ionicPlatform, $ionicHistory){
+.controller('DetalleCtrl', function($scope, CarreraDato, sisFactory, SagaaService, $timeout, $location, $ionicPlatform, $ionicHistory, ConnectivityMonitor ){
     $ionicHistory.clearCache();
     $ionicPlatform.ready(function() {
         SagaaService.initDB();
     });
-    console.log(CarreraDato.getCarrera())
+  //  console.log(CarreraDato.getCarrera())
     $scope.detalle = CarreraDato.getCarrera();
-    console.log("estamos mostrando el detalle de");
+    //console.log("estamos mostrando el detalle de");
 
     $scope.descargar = function(carrera){
-        console.log(carrera);
+      //  console.log(carrera);
         //descarga el archivo al websql en el cell how json 
         sisFactory.posDataDetalle(carrera).then(function(result){
            $timeout(function(){
-                SagaaService.getAllSagaas().then(function(sagaas){
+                SagaaService.getAllSagaas()
+                .then(function(sagaas){
                     $timeout(function(){
                         actualizar(sagaas, result); 
                     });
-                });     
+                });
             });
             $location.path("/app/informacion");
         }).catch(function(result){
@@ -566,28 +712,35 @@ angular.module('starter.controllers', [])
             });
             $location.path("/app/informacion");
         });
-        }
+    
+    }
     function actualizar(sagaa, dato){
+        //console.log("entro actualizar")
             //debo change los datos de sagaa length
+        console.log("pcd:" + sagaa.length);
         if(sagaa.length == 3){
           for(var i = 0; i<sagaa.length; i++){
             var aux = sagaa[i];
-            console.log(aux);
+  //          console.log(aux);
             if(aux.hasOwnProperty("pcd")){
              SagaaService.deleteSagaa(aux);
+             console.log(sagaa.length);
              SagaaService.addSagaa(dato);
              i = sagaa.length;
             }
           }
             //dudasss q muestra carreras
         }else{
+            console.log("entro add pcd");
             SagaaService.addSagaa(dato);
         }
     };
     function offDetalle(sagaa){
+        //console.log("offDetalle");
         for(var i = 0; i<sagaa.length; i++){
             var aux = sagaa[i];
             if( aux.hasOwnProperty("pcd")){
+                //console.log(sagaa[i]);
                $scope.detalle =  aux ;
                i = sagaa.length;
             }
@@ -595,11 +748,11 @@ angular.module('starter.controllers', [])
     };
 })
 //Obtener la Informacion Docente, Carrera, Facultad
-.controller('InformacionCtrl', function($scope, $ionicPlatform, $timeout, SagaaService, sisFactory, CrearBDServ, $window, $ionicHistory ) {
+.controller('InformacionCtrl', function($scope, $ionicPlatform, $timeout, SagaaService, sisFactory, CrearBDServ, $window, $ionicHistory, ConnectivityMonitor ) {
     $ionicHistory.clearCache();
-    console.log("factory");
-    console.log($window.innerWidth);
-    console.log($window.innerHeight);
+  //  console.log("factory");
+  //  console.log($window.innerWidth);
+  //  console.log($window.innerHeight);
 
    // var data = {};
 /*    sisFactory.getDataSis().then(function(result){
@@ -617,19 +770,21 @@ angular.module('starter.controllers', [])
     $timeout(function(){
         SagaaService.getAllSagaas().then(function(sagaas){
             $timeout( function(){
-                console.log('esta en el buscar Dato');
+               // console.log('esta en el buscar Dato');
                 buscarData(sagaas);
            }, 300);
         });
     });
     function buscarData(sagaas){
         var names = sagaas.map(function(elemento) {
-            console.log(elemento);
+            //console.log(elemento);
             return elemento;
         });
         for(var i = 0; i < sagaas.length; i++){
             if(sagaas[i].pcd){
-                var info = CrearBDServ.divFile(sagaas[i], 'informacion');
+                var aux = sagaas[i];//debp ,mirar
+              //  console.log(aux);
+                var info = CrearBDServ.divFile(aux, 'informacion');
                 var infoA = CrearBDServ.sepDatos(info);
                 var infoD = CrearBDServ.crearBDInf(infoA);
                 $scope.datos = infoD;
@@ -638,7 +793,7 @@ angular.module('starter.controllers', [])
     }
 })
 .controller('MateriasCtrl', function($scope, $ionicPlatform, $timeout, SagaaService, sisFactory, CrearBDServ, ListaEstServ){
-    console.log("materias");
+  //  console.log("materias");
     var data = {};
     $ionicPlatform.ready(function() {
         SagaaService.initDB();
@@ -646,7 +801,7 @@ angular.module('starter.controllers', [])
     $timeout(function(){
         SagaaService.getAllSagaas().then(
         function(sagaas){
-            console.log('materia buscar DAta materia');
+          //  console.log('materia buscar DAta materia');
             buscarData(sagaas);
     //sisFactory.getDataSis().then(
     //    function(result){
@@ -656,11 +811,11 @@ angular.module('starter.controllers', [])
                 var arrayObj = [];
                 var x = 0;
                 var grupo = CrearBDServ.divFile(data, tipo);
-                console.log(grupo);
+                //console.log(grupo);
                 var grupoA = CrearBDServ.sepDatos(grupo[0]);
-                console.log(grupoA);
+                //console.log(grupoA);
                 var grupoT = (grupoA.length)/13;
-                console.log(grupoT);
+                //console.log(grupoT);
                 var ini = 0;
                 var fin = 13;
                 for(var i = 0; i <= grupoT ; i++){
@@ -692,15 +847,29 @@ angular.module('starter.controllers', [])
 
     //enviar parametros entre controlador
     $scope.matEst = function(codP, tipo){
-        console.log("tipo Controller:" + codP);
+        //console.log("cdoP:" + codP);
+  //      console.log("tipo:" + tipo);
         ListaEstServ.setcodP(codP, tipo);
+        var codigoP = { codP : codP,
+                        tipo : tipo}
+        //console.log(codigoP);
+        if(!window.localStorage.getItem('codP')){
+            window.localStorage.setItem('codP', codP);
+            window.localStorage.setItem('tipo', tipo);
+        }else{
+            window.localStorage.removeItem('codP');
+            window.localStorage.removeItem('tipo');
+            window.localStorage.setItem('codP', codP);
+            window.localStorage.setItem('tipo', tipo);
+        }
     }
 
     function buscarData(sagaa){
+        var aux;
         for(var i = 0; i< sagaa.length; i++){
-            if(sagaa[i].pcd){
-                console.log(sagaa[i]);
-                data = sagaa[i];
+            aux = sagaa[i]
+            if(aux.pcd){          
+                data = aux;
             }
         }
     }
@@ -715,9 +884,9 @@ angular.module('starter.controllers', [])
         }
     });
     var grupo  = ListaEstServ.getcodP();
-    console.log("Mis parametro q me llega del otro controlador:");
-    console.log(grupo);
-    console.log("fin del parametro grupo");
+    //console.log("Mis parametro q me llega del otro controlador:");
+    //console.log(grupo);
+    //console.log("fin del parametro grupo");
     var arrayObj =[];
     var data = {};
     $ionicPlatform.ready(function() {
@@ -727,17 +896,12 @@ angular.module('starter.controllers', [])
       SagaaService.getAllSagaas().then(
         function(sagaas){
           buscarData(sagaas);
-    //sisFactory.getDataSis().then(function(result){
            var l = function(numId){
             var array = [];
             var x = 0;//repartir
-            console.log(data);
-            console.log(grupo.codP);
             var lista = CrearBDServ.divFile(data ,grupo.codP);//devuelve una cadena de datos 
-            console.log(lista);
             var listaA = CrearBDServ.sepDatos(lista[0]);//separa por coma y quita la primera y ultima q son vacios 
-            var listaT = (listaA.length)/numId;  
-            //cantidad de estudiantes depende la materia 7(mesa) o 11(normal)
+            var listaT = (listaA.length)/numId;//cantidad de estudiantes depende la materia 7(mesa) o 11(normal)
             var ini = 0;//repartir
             var fin = numId;//repartir
                 for(var i = 0; i <= listaT ; i++){
@@ -756,8 +920,6 @@ angular.module('starter.controllers', [])
                         ini = fin;
                         fin = (i + 1) * numId;
                 }//guarda en el objeto de bd
-                console.log("how to makeing-------------");
-                console.log("size::"+arrayObj.length);
                 for(var i = 0; i< arrayObj.length; i++){
                     if(arrayObj[i] === '{}'){
                          arrayObj.splice(i, 1);
@@ -905,45 +1067,45 @@ angular.module('starter.controllers', [])
         }
         $scope.modal.hide();
         //CrearBDServ.guardarDatos(estudiante);
-        console.log("Empezamos------------------ guardar");
         var cadenaArray = [];
         for (var i = 0; i < arrayObj.length; i++){
-                if(estudiante.NRO == arrayObj[i].NRO){
-                    console.log('estudiante.nro'+ arrayObj[i]);
-                    arrayObj[i] = estudiante;
-                };
-                if(arrayObj[i].RAOPC != undefined){//mesa
-                    console.log('1raOpc'+ arrayObj[i]);
-                    cadenaArray [i] = CrearBDServ.unirDatosMesa(arrayObj[i]); 
-                }
-                if(arrayObj[i].ERPAR != undefined){//normal
-                    console.log('2daOpc'+ arrayObj[i]);
-                    cadenaArray [i] = CrearBDServ.unirDatosNormal(arrayObj[i]); 
-                }
+            if(estudiante.NRO == arrayObj[i].NRO){
+                arrayObj[i] = estudiante;
+            };
+            if(arrayObj[i].RAOPC != undefined){//mesa
+                cadenaArray [i] = CrearBDServ.unirDatosMesa(arrayObj[i]); 
+            }
+            if(arrayObj[i].ERPAR != undefined){//normal
+                cadenaArray [i] = CrearBDServ.unirDatosNormal(arrayObj[i]); 
+            }
         };
         cadenaArray.push('');
         cadenaArray.unshift('');
         var cadenaUnida = cadenaArray.join();
-            console.log(cadenaUnida);
-            console.log("codP"+grupo.codP);
-            console.log("tipo"+grupo.tipo);
-        //empezar a unir en el file
-            GuardarData.setDataSis(CrearBDServ.unirFile(data, cadenaUnida, grupo.codP, grupo.tipo));
+        //empezar a unir en el filei
+        //    sagaaGuardar(CrearBDServ.unirFile(data, cadenaUnida, grupo.codP, grupo.tipo));
+        //console.log(data);
+        GuardarData.setDataSis(CrearBDServ.unirFile(data, cadenaUnida, grupo.codP, grupo.tipo));
         //aqui debemos guardar en el fileService 
         };
      });
 });
 //guardar los datos del Estudiante
-    function buscarData(sagaa){
-        for(var i = 0; i< sagaa.length; i++){
-            if(sagaa[i].pcd){
-                console.log(sagaa[i]);
-                data = sagaa[i];
+  function buscarData(sagaa){
+      var aux;
+      for(var i = 0; i< sagaa.length; i++){
+          aux = sagaa[i];
+            if(aux.pcd){
+                //console.log(sagaa.length);
+                //console.log(aux);
+                //delete aux._id;
+                //delete aux._rev;
+                data = aux;
             }
         }
-    }
+  };
 })
-.controller('FileCtrl', function($scope, sisFactory) {
+/*.controller('FileCtrl', function($scope, sisFactory) {
 
     $scope.showContent = function($fileContent){
             $scope.content = $fileContent;
@@ -972,4 +1134,4 @@ angular.module('starter.controllers', [])
     $scope.settings = {
         enableFriends: true
     };
-});
+})*/;

@@ -128,7 +128,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
        whiteListedDomains: ['localhost', '192.168.43.209'],
        tokenGetter: function(options, jwtHelper){
          var token = localStorage.getItem('id_token');
-         console.log(token);
+        // console.log(token);
           return token;
        }
   });
@@ -139,7 +139,7 @@ angular.module('starter', ['ionic', 'satellizer','starter.controllers', 'starter
         //Maybe do some kind of check right here           
          logHttp.push(rejection.config);
          if(localStorage.getItem('id_request')){
-            console.log("hay error, lo guardamos");
+           // console.log("hay error, lo guardamos");
          }
          else{
             localStorage.setItem('id_request', logHttp.getAllRequests());

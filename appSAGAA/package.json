@@ -60,6 +60,13 @@
     {
       "locator": "https://github.com/katzer/cordova-plugin-background-mode.git",
       "id": "cordova-plugin-background-mode"
+    },
+    {
+      "variables": {
+        "SENDER_ID": "12341234"
+      },
+      "locator": "phonegap-plugin-push",
+      "id": "phonegap-plugin-push"
     }
   ],
   "cordovaPlatforms": [
